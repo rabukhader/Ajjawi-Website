@@ -1,0 +1,43 @@
+[
+  {
+    "user": "John Smith",
+    "rating": 5,
+    "comment": "Amazing quality! The olive oil is the best I've ever tasted. Highly recommend!"
+  },
+  {
+    "user": "Lisa Anderson",
+    "rating": 5,
+    "comment": "Fresh vegetables every time. Golden Harvest is my go-to brand for organic produce."
+  },
+  {
+    "user": "David Lee",
+    "rating": 4,
+    "comment": "Great spices, very aromatic. The spice collection is perfect for my kitchen."
+  },
+  {
+    "user": "Maria Garcia",
+    "rating": 5,
+    "comment": "The seafood from Coastal Delights is always fresh and delicious. Love their salmon!"
+  },
+  {
+    "user": "Robert Taylor",
+    "rating": 5,
+    "comment": "Excellent customer service and premium products. Will definitely order again."
+  },
+  {
+    "user": "Jennifer White",
+    "rating": 4,
+    "comment": "Good variety of products. The honey is especially good quality."
+  },
+  {
+    "user": "James Brown",
+    "rating": 5,
+    "comment": "Authentic flavors and high quality. The pita bread is fantastic!"
+  },
+  {
+    "user": "Patricia Davis",
+    "rating": 5,
+    "comment": "Love all their brands. Consistent quality and great prices. Highly satisfied!"
+  }
+]
+

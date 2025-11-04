@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "name": "Ajjawi",
+    "logo": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&h=200&fit=crop",
+    "description": "Ajjawi Special Rice Collection: Premium Basmati and Round Grain rice varieties, offering the finest quality grains for your table."
+  },
+  {
+    "id": "2",
+    "name": "Laziza",
+    "logo": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=200&fit=crop",
+    "description": "Laziza offers the finest quality canned foods, dry grains, and oils. A trusted name for premium food products in the Palestinian market."
+  },
+  {
+    "id": "3",
+    "name": "Avivia",
+    "logo": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=200&h=200&fit=crop",
+    "description": "Avivia, a cappuccino with a unique Italian flavor. Premium coffee experience that brings the taste of Italy to your cup."
+  },
+  {
+    "id": "4",
+    "name": "Alloush",
+    "logo": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=200&h=200&fit=crop",
+    "description": "Alloush Rice offers various weights to suit all needs and occasions: Premium Basmati and Round Grain rice in different package sizes."
+  },
+  {
+    "id": "5",
+    "name": "GO 11",
+    "logo": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200&h=200&fit=crop",
+    "description": "GO 11 glass bottles, rich in high levels of salts and minerals. Premium hydration with essential nutrients for your health."
+  },
+  {
+    "id": "6",
+    "name": "alrayan",
+    "logo": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200&h=200&fit=crop",
+    "description": "alrayan offers 250 water cups, providing convenient and quality hydration solutions for your daily needs."
+  }
+]

@@ -1,0 +1,178 @@
+[
+  {
+    "id": "1",
+    "name": "Laziza Condensed Milk 390 ml",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop",
+    "description": "Premium condensed milk in convenient 390ml packaging. Packed in 1/48 packs, perfect for cooking, baking, and beverages.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "2",
+    "name": "Laziza Tomato 70g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1546097488-7e0e3fd16e34?w=400&h=400&fit=crop",
+    "description": "Small convenient size tomato paste, 70g per piece. Packed 25 pieces per pack, 1/24 packs. Ideal for quick meals and small servings.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "3",
+    "name": "Laziza Tomato 400g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1546097488-7e0e3fd16e34?w=400&h=400&fit=crop",
+    "description": "Premium tomato paste in 400g containers. Packed in 1/24 packs. Perfect for cooking traditional dishes and adding rich tomato flavor.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "4",
+    "name": "Tomato Paste 135g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1546097488-7e0e3fd16e34?w=400&h=400&fit=crop",
+    "description": "Convenient 135g tomato paste containers. Packed in 1/48 packs. Great for everyday cooking needs.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "5",
+    "name": "Tomato Paste 1.3 KG",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1546097488-7e0e3fd16e34?w=400&h=400&fit=crop",
+    "description": "Large size tomato paste with thickness 28-30%, 1.3 KG per container. Packed in 1/48 packs. Ideal for restaurants and large families.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "6",
+    "name": "Foul (Hot & Normal) 400g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop",
+    "description": "Traditional fava beans in both hot and normal varieties. 400g per can, packed in 12 packs. A staple of Middle Eastern cuisine.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "7",
+    "name": "Laziza Sliced 280ml",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&h=400&fit=crop",
+    "description": "Sliced vegetables in 280ml cans. Packed in 12/1 packs. Convenient and ready to use for your favorite recipes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "8",
+    "name": "Whole Mushrooms 400g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1565126436808-5e1ddee2d5c8?w=400&h=400&fit=crop",
+    "description": "Premium whole mushrooms preserved in 400g cans. Packed in 1/12 packs. Perfect for salads, pizzas, and various dishes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "9",
+    "name": "Mushroom Slices 400g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1565126436808-5e1ddee2d5c8?w=400&h=400&fit=crop",
+    "description": "Sliced mushrooms in 400g cans. Packed in 1/24 packs. Ready to use, convenient for quick meal preparation.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "10",
+    "name": "Lazizah Sliced Pineapple in Syrup 3050g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=400&h=400&fit=crop",
+    "description": "Large size sliced pineapple in sweet syrup. 3050g per can. Perfect for desserts and special occasions.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "11",
+    "name": "White Beans 580g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
+    "description": "Premium white beans in 580g cans. Packed in 1/12 packs. A nutritious and versatile ingredient for many dishes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "12",
+    "name": "Laziza Sweet Corn with a Key 340g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1518977822534-7049a61ee0c2?w=400&h=400&fit=crop",
+    "description": "Sweet corn kernels in 340g cans with easy-open key. Packed in 1/24 packs. Convenient and delicious for salads and side dishes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "13",
+    "name": "Laziza Sliced Pineapple in Syrup 850g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1587735243615-c03f25aaff15?w=400&h=400&fit=crop",
+    "description": "Sliced pineapple in sweet syrup. 850g per can, packed in 1/24 packs. Perfect for desserts and snacks.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "14",
+    "name": "Laziza Thick Cream 170g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400&h=400&fit=crop",
+    "description": "Rich thick cream in 170g containers. Packed in 1/48 packs. Ideal for cooking, baking, and coffee.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "15",
+    "name": "Solid Tuna in Oil Hot 150g",
+    "brandId": "2",
+    "image": "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=400&h=400&fit=crop",
+    "description": "Premium solid tuna in hot oil. 150g per can, packed in 1/48 packs. Rich in protein and perfect for sandwiches and salads.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "16",
+    "name": "Ajjawi Basmati Rice",
+    "brandId": "1",
+    "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
+    "description": "Premium Basmati rice from Ajjawi Special Rice Collection. Long-grain, aromatic rice perfect for traditional dishes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "17",
+    "name": "Ajjawi Round Grain Rice",
+    "brandId": "1",
+    "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
+    "description": "Premium Round Grain rice from Ajjawi Special Rice Collection. Perfect texture and flavor for all your rice dishes.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "18",
+    "name": "Alloush Basmati Rice",
+    "brandId": "4",
+    "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
+    "description": "Alloush Basmati rice in various weights to suit all needs and occasions. Premium quality long-grain rice.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "19",
+    "name": "Alloush Round Grain Rice",
+    "brandId": "4",
+    "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop",
+    "description": "Alloush Round Grain rice available in various package sizes. Perfect for daily meals and special occasions.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "20",
+    "name": "Avivia Cappuccino",
+    "brandId": "3",
+    "image": "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400&h=400&fit=crop",
+    "description": "Avivia cappuccino with a unique Italian flavor. Premium coffee experience that brings authentic Italian taste to your cup.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "21",
+    "name": "GO 11 Glass Bottle",
+    "brandId": "5",
+    "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop",
+    "description": "GO 11 glass bottles, rich in high levels of salts and minerals. Premium hydration with essential nutrients for optimal health.",
+    "price": "Contact for pricing"
+  },
+  {
+    "id": "22",
+    "name": "alrayan Water Cups 250",
+    "brandId": "6",
+    "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=400&h=400&fit=crop",
+    "description": "alrayan offers 250 water cups, providing convenient and quality hydration solutions for your daily needs.",
+    "price": "Contact for pricing"
+  }
+]

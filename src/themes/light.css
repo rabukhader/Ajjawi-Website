@@ -1,0 +1,40 @@
+:root[data-theme="light"] {
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-card: #ffffff;
+  
+  /* Text Colors */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  --text-inverse: #ffffff;
+  
+  /* Accent Colors */
+  --accent-primary: #eab308;
+  --accent-primary-hover: #ca8a04;
+  --accent-secondary: #22c55e;
+  --accent-secondary-hover: #16a34a;
+  
+  /* Border Colors */
+  --border-primary: #e5e7eb;
+  --border-secondary: #d1d5db;
+  
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Navbar */
+  --navbar-bg: #ffffff;
+  --navbar-text: #111827;
+  --navbar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  
+  /* Footer */
+  --footer-bg: #111827;
+  --footer-text: #ffffff;
+  --footer-text-secondary: #9ca3af;
+}
+

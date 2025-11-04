@@ -1,0 +1,189 @@
+const translations = {
+  en: {
+    // Navigation
+    'nav.home': 'Home',
+    'nav.brands': 'Our Brands',
+    'nav.products': 'Our Products',
+    'nav.about': 'About Us',
+    'nav.contact': 'Contact Us',
+    
+    // Home Page
+    'home.hero.title': 'Welcome to',
+    'home.hero.subtitle': 'Premium food brands bringing quality and tradition to your table',
+    'home.hero.cta': 'Explore Our Brands',
+    'home.about.title': 'About Ajjawi',
+    'home.about.text': 'Ajjawi Trading Company was founded in 1981 by a wholesale shop in the city of Jenin under the direction of its founder and owner Hamza Al-Ajawi. We carry many exclusive brands and market and distribute them in the Palestinian market through our trained staff. Our products are marketed through the sales department, which consists of a team of representatives distributed across all areas of the West Bank, Gaza, and the occupied Palestinian territories of 1948.',
+    'home.brands.title': 'Explore Our Brands',
+    'home.brands.subtitle': 'Discover our diverse portfolio of premium food brands',
+    'home.brands.view': 'View Products',
+    'home.testimonials.title': 'What Our Partners Say',
+    'home.reviews.title': 'Customer Reviews',
+    'home.photos.title': 'Photo Album',
+    'home.photos.subtitle': 'A glimpse into our products and quality',
+    
+    // Brands Page
+    'brands.title': 'Our Brands',
+    'brands.subtitle': 'Discover our diverse portfolio of premium food brands, each committed to excellence and bringing unique flavors to your table.',
+    
+    // Products Page
+    'products.title': 'Our Products',
+    'products.subtitle': 'Browse our complete catalog of premium food products',
+    'products.filters.title': 'Filters',
+    'products.filters.search': 'Search Products',
+    'products.filters.brand': 'Filter by Brand',
+    'products.filters.clear': 'Clear Filters',
+    'products.filters.results': 'Showing',
+    'products.filters.of': 'of',
+    'products.filters.products': 'products',
+    'products.noResults': 'No products found matching your criteria.',
+    'products.noResults.clear': 'Clear all filters',
+    
+    // About Page
+    'about.title': 'About Ajjawi',
+    'about.subtitle': 'A leading food company dedicated to bringing quality, tradition, and innovation to your table.',
+    'about.history.title': 'Our History',
+    'about.history.text1': 'Ajjawi Trading Company was founded in 1981 by a wholesale shop in the city of Jenin under the direction of its founder and owner Hamza Al-Ajawi. The company started working in all foodstuffs, beverages and detergents with the aim of wholesale and retail distribution.',
+    'about.history.text2': "The company's products are marketed through the sales department, which includes a group of delegates distributed throughout the West Bank, Gaza and Palestinian occupied territories in 1948. Our sales department is equipped with the latest globally recognized scientific methods, and we also have a dedicated marketing and promotion department for the company's products.",
+    'about.history.text3': 'Today, Ajjawi Trading Company carries many exclusive brands and markets and distributes them in the Palestinian market through its trained staff. We continue to expand our reach and serve customers across all Palestinian territories with quality products and exceptional service.',
+    'about.mission.title': 'Our Mission',
+    'about.mission.text': 'To carry many exclusive brands and market and distribute them in the Palestinian market through our trained staff. We are committed to providing quality foodstuffs, beverages, and detergents through wholesale and retail distribution, serving customers across all areas of the West Bank, Gaza, and the occupied Palestinian territories of 1948.',
+    'about.vision.title': 'Our Vision',
+    'about.vision.text': 'To be the leading trading company in Palestine, recognized for our extensive network of sales representatives and our commitment to bringing exclusive brands to Palestinian households. We envision a future where our products reach every corner of Palestine, supported by our trained staff and modern marketing methods.',
+    'about.values.title': 'Our Values',
+    'about.values.subtitle': 'The principles that guide everything we do',
+    'about.values.quality.title': 'Quality First',
+    'about.values.quality.text': 'We never compromise on quality. Every product undergoes rigorous quality checks.',
+    'about.values.sustainability.title': 'Sustainability',
+    'about.values.sustainability.text': 'We are committed to sustainable practices and environmental responsibility.',
+    'about.values.customer.title': 'Customer Focus',
+    'about.values.customer.text': 'Our customers are at the heart of everything we do. We listen and respond.',
+    'about.values.excellence.title': 'Excellence',
+    'about.values.excellence.text': 'We strive for excellence in every product, every service, every interaction.',
+    
+    // Contact Page
+    'contact.title': 'Contact Us',
+    'contact.subtitle': "We'd love to hear from you. Get in touch with us!",
+    'contact.form.title': 'Send us a Message',
+    'contact.form.name': 'Name',
+    'contact.form.email': 'Email',
+    'contact.form.message': 'Message',
+    'contact.form.send': 'Send Message',
+    'contact.form.success': 'Thank you for your message! We will get back to you soon.',
+    'contact.info.title': 'Get in Touch',
+    'contact.info.email': 'Email',
+    'contact.info.phone': 'Phone',
+    'contact.info.address': 'Address',
+    'contact.map.title': 'Google Maps Embed',
+    'contact.map.placeholder': 'Map integration placeholder',
+    
+    // Footer
+    'footer.description': 'Bringing quality food products to your table. We own and operate multiple premium food brands, each dedicated to excellence and sustainability.',
+    'footer.links.title': 'Quick Links',
+    'footer.contact.title': 'Contact Info',
+    'footer.copyright': 'All rights reserved.',
+    
+    // Brand Detail
+    'brand.detail.back': 'Back to Brands',
+    'brand.detail.products': 'Products',
+    'brand.detail.noProducts': 'No products available for this brand yet.',
+    'brand.detail.notFound': 'Brand Not Found',
+    
+    // Common
+    'common.contact': 'Contact for pricing',
+  },
+  ar: {
+    // Navigation
+    'nav.home': 'الرئيسية',
+    'nav.brands': 'علاماتنا التجارية',
+    'nav.products': 'منتجاتنا',
+    'nav.about': 'من نحن',
+    'nav.contact': 'اتصل بنا',
+    
+    // Home Page
+    'home.hero.title': 'مرحباً بك في',
+    'home.hero.subtitle': 'علامات تجارية غذائية مميزة تجلب الجودة والتقليد إلى مائدتك',
+    'home.hero.cta': 'استكشف علاماتنا التجارية',
+    'home.about.title': 'عن عجاوي',
+    'home.about.text': 'تأسست شركة عجاوي التجارية في عام 1981 من خلال متجر جملة في مدينة جنين تحت إشراف مؤسسها ومالكها حمزة العجاوي. نحمل العديد من العلامات التجارية الحصرية ونقوم بتسويقها وتوزيعها في السوق الفلسطيني من خلال موظفينا المدربين. يتم تسويق منتجات الشركة من خلال قسم المبيعات، والذي يتكون من فريق من الممثلين الموزعين في جميع مناطق الضفة الغربية وقطاع غزة والأراضي الفلسطينية المحتلة عام 1948.',
+    'home.brands.title': 'استكشف علاماتنا التجارية',
+    'home.brands.subtitle': 'اكتشف محفظتنا المتنوعة من العلامات التجارية الغذائية المميزة',
+    'home.brands.view': 'عرض المنتجات',
+    'home.testimonials.title': 'ماذا يقول شركاؤنا',
+    'home.reviews.title': 'آراء العملاء',
+    'home.photos.title': 'ألبوم الصور',
+    'home.photos.subtitle': 'لمحة عن منتجاتنا وجودتنا',
+    
+    // Brands Page
+    'brands.title': 'علاماتنا التجارية',
+    'brands.subtitle': 'اكتشف محفظتنا المتنوعة من العلامات التجارية الغذائية المميزة، كل منها ملتزم بالتميز ويجلب نكهات فريدة إلى مائدتك.',
+    
+    // Products Page
+    'products.title': 'منتجاتنا',
+    'products.subtitle': 'تصفح كتالوجنا الكامل للمنتجات الغذائية المميزة',
+    'products.filters.title': 'المرشحات',
+    'products.filters.search': 'البحث عن المنتجات',
+    'products.filters.brand': 'تصفية حسب العلامة التجارية',
+    'products.filters.clear': 'مسح المرشحات',
+    'products.filters.results': 'عرض',
+    'products.filters.of': 'من',
+    'products.filters.products': 'منتج',
+    'products.noResults': 'لم يتم العثور على منتجات تطابق معاييرك.',
+    'products.noResults.clear': 'مسح جميع المرشحات',
+    
+    // About Page
+    'about.title': 'من نحن',
+    'about.subtitle': 'شركة غذائية رائدة ملتزمة بتقديم الجودة والتقليد والابتكار إلى مائدتك.',
+    'about.history.title': 'تاريخنا',
+    'about.history.text1': 'تأسست شركة عجاوي التجارية في عام 1981 من خلال متجر جملة في مدينة جنين تحت إشراف مؤسسها ومالكها حمزة العجاوي. بدأت الشركة العمل في جميع المواد الغذائية والمشروبات والمنظفات بهدف التوزيع بالجملة والتجزئة.',
+    'about.history.text2': 'يتم تسويق منتجات الشركة من خلال قسم المبيعات، والذي يشمل مجموعة من المندوبين الموزعين في جميع أنحاء الضفة الغربية وقطاع غزة والأراضي الفلسطينية المحتلة عام 1948. قسم المبيعات لدينا مجهز بأحدث الطرق العلمية المعترف بها عالمياً، ولدينا أيضاً قسم مخصص للتسويق والترويج لمنتجات الشركة.',
+    'about.history.text3': 'اليوم، تحمل شركة عجاوي التجارية العديد من العلامات التجارية الحصرية وتقوم بتسويقها وتوزيعها في السوق الفلسطيني من خلال موظفيها المدربين. نواصل توسيع نطاقنا وخدمة العملاء في جميع الأراضي الفلسطينية بمنتجات عالية الجودة وخدمة استثنائية.',
+    'about.mission.title': 'مهمتنا',
+    'about.mission.text': 'حمل العديد من العلامات التجارية الحصرية وتسويقها وتوزيعها في السوق الفلسطيني من خلال موظفينا المدربين. نحن ملتزمون بتقديم مواد غذائية ومشروبات ومنظفات عالية الجودة من خلال التوزيع بالجملة والتجزئة، وخدمة العملاء في جميع مناطق الضفة الغربية وقطاع غزة والأراضي الفلسطينية المحتلة عام 1948.',
+    'about.vision.title': 'رؤيتنا',
+    'about.vision.text': 'أن نكون الشركة التجارية الرائدة في فلسطين، معترف بنا لشبكتنا الواسعة من ممثلي المبيعات والتزامنا بجلب العلامات التجارية الحصرية إلى الأسر الفلسطينية. نتخيل مستقبلاً تصل فيه منتجاتنا إلى كل ركن من أركان فلسطين، بدعم من موظفينا المدربين وطرق التسويق الحديثة.',
+    'about.values.title': 'قيمنا',
+    'about.values.subtitle': 'المبادئ التي توجه كل ما نقوم به',
+    'about.values.quality.title': 'الجودة أولاً',
+    'about.values.quality.text': 'لا نتساوم أبداً على الجودة. كل منتج يخضع لفحوصات جودة صارمة.',
+    'about.values.sustainability.title': 'الاستدامة',
+    'about.values.sustainability.text': 'نحن ملتزمون بالممارسات المستدامة والمسؤولية البيئية.',
+    'about.values.customer.title': 'التركيز على العملاء',
+    'about.values.customer.text': 'عملاؤنا في قلب كل ما نقوم به. نستمع ونستجيب.',
+    'about.values.excellence.title': 'التميز',
+    'about.values.excellence.text': 'نسعى للتميز في كل منتج وكل خدمة وكل تفاعل.',
+    
+    // Contact Page
+    'contact.title': 'اتصل بنا',
+    'contact.subtitle': 'نود أن نسمع منك. تواصل معنا!',
+    'contact.form.title': 'أرسل لنا رسالة',
+    'contact.form.name': 'الاسم',
+    'contact.form.email': 'البريد الإلكتروني',
+    'contact.form.message': 'الرسالة',
+    'contact.form.send': 'إرسال الرسالة',
+    'contact.form.success': 'شكراً لك على رسالتك! سنعود إليك قريباً.',
+    'contact.info.title': 'تواصل معنا',
+    'contact.info.email': 'البريد الإلكتروني',
+    'contact.info.phone': 'الهاتف',
+    'contact.info.address': 'العنوان',
+    'contact.map.title': 'خرائط جوجل',
+    'contact.map.placeholder': 'مكان تكامل الخريطة',
+    
+    // Footer
+    'footer.description': 'جلب منتجات غذائية عالية الجودة إلى مائدتك. نملك ونشغل العديد من العلامات التجارية الغذائية المميزة، كل منها ملتزم بالتميز والاستدامة.',
+    'footer.links.title': 'روابط سريعة',
+    'footer.contact.title': 'معلومات الاتصال',
+    'footer.copyright': 'جميع الحقوق محفوظة.',
+    
+    // Brand Detail
+    'brand.detail.back': 'العودة إلى العلامات التجارية',
+    'brand.detail.products': 'المنتجات',
+    'brand.detail.noProducts': 'لا توجد منتجات متاحة لهذه العلامة التجارية بعد.',
+    'brand.detail.notFound': 'العلامة التجارية غير موجودة',
+    
+    // Common
+    'common.contact': 'اتصل للاستعلام عن السعر',
+  },
+};
+
+export default translations;
+
