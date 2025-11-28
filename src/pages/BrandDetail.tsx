@@ -1,20 +1,54 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
-import brandsData from '../../data/brands.json';
-import productsData from '../../data/products.json';
+import { useState, useEffect } from 'react';
+import type { Brand } from '../types/product';
+import { brandRepository } from '../repositories/brand.repository';
 
 const BrandDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useLanguage();
-  const brand = brandsData.find((b) => b.id === id);
-  const brandProducts = productsData.filter((p) => p.brandId === id);
+  const [brand, setBrand] = useState<Brand | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  if (!brand) {
+  useEffect(() => {
+    const fetchBrand = async () => {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const data = await brandRepository.getById(id);
+        setBrand(data);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch brand'));
+        console.error('Error fetching brand:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBrand();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-theme-primary">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-theme-secondary">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !brand) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-theme-primary">
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4 text-theme-primary">{t('brand.detail.notFound')}</h1>
+          <p className="text-red-600 mb-4">{error?.message}</p>
           <Link to="/brands" className="text-primary-600 hover:underline">
             {t('brand.detail.back')}
           </Link>
@@ -22,6 +56,8 @@ const BrandDetail = () => {
       </div>
     );
   }
+
+  const brandProducts = brand.products || [];
 
   return (
     <div className="min-h-screen py-20 bg-theme-secondary">
@@ -87,19 +123,30 @@ const BrandDetail = () => {
                   whileHover={{ y: -10, scale: 1.02 }}
                   className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-shadow"
                 >
-                  <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+                  {product.image && (
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2 text-theme-primary">{product.name}</h3>
-                    <p className="text-theme-secondary mb-4 line-clamp-3">{product.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary-600">{product.price}</span>
-                    </div>
+                    {product.description && (
+                      <p className="text-theme-secondary mb-4 line-clamp-3">{product.description}</p>
+                    )}
+                    {product.type && product.type.trim() !== '' && (
+                      <p className="text-sm text-theme-secondary mb-2">
+                        {t('products.type')}: {product.type}
+                      </p>
+                    )}
+                    {product.price && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold text-primary-600">{product.price}</span>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

@@ -2,15 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import brandsData from '../../data/brands.json';
-import testimonialsData from '../../data/testimonials.json';
-import reviewsData from '../../data/reviews.json';
-import photosData from '../../data/photos.json';
+import { useBrands } from '../hooks/useBrands';
 
 const Home = () => {
   const { t } = useLanguage();
+  const { brands: brandsData } = useBrands();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const heroImages = [
     'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=1200&h=600&fit=crop',
@@ -25,14 +22,6 @@ const Home = () => {
     }, 5000);
 
     return () => clearInterval(slideInterval);
-  }, []);
-
-  useEffect(() => {
-    const testimonialInterval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonialsData.length);
-    }, 6000);
-
-    return () => clearInterval(testimonialInterval);
   }, []);
 
   const containerVariants = {
@@ -186,148 +175,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials Carousel */}
-      <section className="py-20 bg-theme-primary">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold mb-4 text-theme-primary">{t('home.testimonials.title')}</h2>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto relative">
-            <motion.div
-              key={currentTestimonial}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              className="bg-theme-secondary rounded-lg p-8 text-center"
-            >
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden">
-                <img
-                  src={testimonialsData[currentTestimonial].photo}
-                  alt={testimonialsData[currentTestimonial].name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <p className="text-lg text-theme-secondary mb-4 italic">
-                "{testimonialsData[currentTestimonial].message}"
-              </p>
-              <h4 className="font-semibold text-theme-primary">
-                {testimonialsData[currentTestimonial].name}
-              </h4>
-              <p className="text-theme-secondary">{testimonialsData[currentTestimonial].role}</p>
-            </motion.div>
-
-            <div className="flex justify-center mt-6 space-x-2">
-              {testimonialsData.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    currentTestimonial === index ? 'bg-primary-600 w-8' : 'bg-gray-300'
-                  }`}
-                  aria-label={`Go to testimonial ${index + 1}`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Customer Reviews Section */}
-      <section className="py-20 bg-theme-secondary">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold mb-4 text-theme-primary">{t('home.reviews.title')}</h2>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {reviewsData.map((review, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="bg-theme-card rounded-lg shadow-theme p-6"
-              >
-                <div className="flex mb-3">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className={`w-5 h-5 ${
-                        i < review.rating ? 'text-yellow-400' : 'text-gray-300'
-                      }`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-theme-secondary mb-3">{review.comment}</p>
-                <p className="text-sm font-semibold text-theme-primary">- {review.user}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Photo Album Grid */}
-      <section className="py-20 bg-theme-primary">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold mb-4 text-theme-primary">{t('home.photos.title')}</h2>
-            <p className="text-lg text-theme-secondary">{t('home.photos.subtitle')}</p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {photosData.map((photo) => (
-              <motion.div
-                key={photo.id}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                className="rounded-lg overflow-hidden shadow-theme hover:shadow-theme-lg transition-shadow"
-              >
-                <img
-                  src={photo.imageUrl}
-                  alt={photo.caption}
-                  className="w-full h-64 object-cover"
-                />
-                <div className="p-4 bg-theme-secondary">
-                  <p className="text-theme-secondary font-medium">{photo.caption}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      {/* Testimonials Carousel - Removed, will be added via API if needed */}
+      
+      {/* Customer Reviews Section - Removed, will be added via API if needed */}
+      
+      {/* Photo Album Grid - Removed, will be added via API if needed */}
     </div>
   );
 };

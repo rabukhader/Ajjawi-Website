@@ -37,6 +37,7 @@ const translations = {
     'products.filters.products': 'products',
     'products.noResults': 'No products found matching your criteria.',
     'products.noResults.clear': 'Clear all filters',
+    'products.type': 'Type',
     
     // About Page
     'about.title': 'About Ajjawi',
@@ -90,6 +91,21 @@ const translations = {
     
     // Common
     'common.contact': 'Contact for pricing',
+    'common.loading': 'Loading...',
+    'common.error': 'An error occurred',
+    'common.retry': 'Retry',
+    
+    // UI Elements
+    'ui.menu': 'Menu',
+    'ui.language': 'Language',
+    'ui.theme': 'Theme',
+    'ui.darkMode': 'Dark Mode',
+    'ui.lightMode': 'Light Mode',
+    'ui.english': 'English',
+    'ui.arabic': 'العربية',
+    'ui.close': 'Close',
+    'ui.toggleMenu': 'Toggle menu',
+    'ui.toggleTheme': 'Toggle theme',
   },
   ar: {
     // Navigation
@@ -129,6 +145,7 @@ const translations = {
     'products.filters.products': 'منتج',
     'products.noResults': 'لم يتم العثور على منتجات تطابق معاييرك.',
     'products.noResults.clear': 'مسح جميع المرشحات',
+    'products.type': 'النوع',
     
     // About Page
     'about.title': 'من نحن',
@@ -182,6 +199,21 @@ const translations = {
     
     // Common
     'common.contact': 'اتصل للاستعلام عن السعر',
+    'common.loading': 'جاري التحميل...',
+    'common.error': 'حدث خطأ',
+    'common.retry': 'إعادة المحاولة',
+    
+    // UI Elements
+    'ui.menu': 'القائمة',
+    'ui.language': 'اللغة',
+    'ui.theme': 'المظهر',
+    'ui.darkMode': 'الوضع الداكن',
+    'ui.lightMode': 'الوضع الفاتح',
+    'ui.english': 'English',
+    'ui.arabic': 'العربية',
+    'ui.close': 'إغلاق',
+    'ui.toggleMenu': 'تبديل القائمة',
+    'ui.toggleTheme': 'تبديل المظهر',
   },
 };
 

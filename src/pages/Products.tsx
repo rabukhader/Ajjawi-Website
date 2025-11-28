@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
-import productsData from '../../data/products.json';
-import brandsData from '../../data/brands.json';
+import { useProducts } from '../hooks/useProducts';
+import { useBrands } from '../hooks/useBrands';
 
 const Products = () => {
   const { t } = useLanguage();
+  const { products: productsData, loading: productsLoading, error: productsError } = useProducts();
+  const { brands: brandsData, loading: brandsLoading, error: brandsError } = useBrands();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -15,7 +17,7 @@ const Products = () => {
         selectedBrands.length === 0 || selectedBrands.includes(product.brandId);
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+        (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesBrand && matchesSearch;
     });
   }, [selectedBrands, searchQuery]);
@@ -25,6 +27,30 @@ const Products = () => {
       prev.includes(brandId) ? prev.filter((id) => id !== brandId) : [...prev, brandId]
     );
   };
+
+  if (productsLoading || brandsLoading) {
+    return (
+      <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-theme-secondary">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (productsError || brandsError) {
+    return (
+      <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4 text-lg">{t('common.error')}</p>
+          <p className="text-theme-secondary">
+            {productsError?.message || brandsError?.message || 'Failed to load data'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-20 bg-theme-secondary">
@@ -152,10 +178,19 @@ const Products = () => {
                           {brandsData.find((b) => b.id === product.brandId)?.name}
                         </span>
                       </div>
-                      <p className="text-theme-secondary mb-4 line-clamp-2">{product.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-primary-600">{product.price}</span>
-                      </div>
+                      {product.description && (
+                        <p className="text-theme-secondary mb-4 line-clamp-2">{product.description}</p>
+                      )}
+                      {product.type && product.type.trim() !== '' && (
+                        <p className="text-sm text-theme-secondary mb-2">
+                          {t('products.type')}: {product.type}
+                        </p>
+                      )}
+                      {product.price && (
+                        <div className="flex items-center justify-between">
+                          <span className="text-2xl font-bold text-primary-600">{product.price}</span>
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 ))}

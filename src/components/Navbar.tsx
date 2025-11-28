@@ -98,11 +98,11 @@ const Navbar = () => {
             </div>
 
             {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-theme-secondary hover:bg-theme-tertiary transition-colors"
-              aria-label="Toggle theme"
-            >
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-theme-secondary hover:bg-theme-tertiary transition-colors"
+                aria-label={t('ui.toggleTheme')}
+              >
               {theme === 'light' ? (
                 <svg
                   className="w-5 h-5 text-theme-primary"
@@ -139,7 +139,7 @@ const Navbar = () => {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-theme-secondary hover:text-primary-600 transition-colors"
-                aria-label="Toggle menu"
+                aria-label={t('ui.toggleMenu')}
               >
                 {isMobileMenuOpen ? (
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -183,12 +183,12 @@ const Navbar = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between p-6 border-b" style={{ borderColor: 'var(--border-primary)' }}>
                       <h2 className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                        Menu
+                        {t('ui.menu')}
                       </h2>
                       <button
                         onClick={() => setIsMobileMenuOpen(false)}
                         className="p-2 rounded-lg hover:bg-theme-secondary transition-colors"
-                        aria-label="Close menu"
+                        aria-label={t('ui.close')}
                       >
                         <svg className="w-6 h-6 text-theme-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -269,7 +269,7 @@ const Navbar = () => {
                       <div className="space-y-4">
                         {/* Language Switcher */}
                         <div>
-                          <p className="text-sm font-semibold mb-2 text-theme-secondary">Language</p>
+                          <p className="text-sm font-semibold mb-2 text-theme-secondary">{t('ui.language')}</p>
                           <div className="flex items-center bg-theme-secondary rounded-lg p-1">
                             <button
                               onClick={() => setLanguage('en')}
@@ -279,7 +279,7 @@ const Navbar = () => {
                                   : 'text-theme-secondary hover:text-theme-primary'
                               }`}
                             >
-                              English
+                              {t('ui.english')}
                             </button>
                             <button
                               onClick={() => setLanguage('ar')}
@@ -289,17 +289,17 @@ const Navbar = () => {
                                   : 'text-theme-secondary hover:text-theme-primary'
                               }`}
                             >
-                              العربية
+                              {t('ui.arabic')}
                             </button>
                           </div>
                         </div>
 
                         {/* Theme Toggle */}
                         <div>
-                          <p className="text-sm font-semibold mb-2 text-theme-secondary">Theme</p>
+                          <p className="text-sm font-semibold mb-2 text-theme-secondary">{t('ui.theme')}</p>
                           <button
                             onClick={toggleTheme}
-                            className="w-full p-3 rounded-lg bg-theme-secondary hover:bg-theme-tertiary transition-all flex items-center justify-center space-x-2 group"
+                            className="w-full p-3 rounded-lg bg-theme-secondary hover:bg-theme-tertiary transition-all flex items-center justify-center space-x-2 rtl:space-x-reverse group"
                           >
                             {theme === 'light' ? (
                               <>
@@ -316,7 +316,7 @@ const Navbar = () => {
                                     d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                                   />
                                 </svg>
-                                <span className="text-theme-primary font-medium">Dark Mode</span>
+                                <span className="text-theme-primary font-medium">{t('ui.darkMode')}</span>
                               </>
                             ) : (
                               <>
@@ -333,7 +333,7 @@ const Navbar = () => {
                                     d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
                                   />
                                 </svg>
-                                <span className="text-theme-primary font-medium">Light Mode</span>
+                                <span className="text-theme-primary font-medium">{t('ui.lightMode')}</span>
                               </>
                             )}
                           </button>

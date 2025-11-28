@@ -32,12 +32,20 @@
     background-color: var(--bg-card);
   }
   
+  .bg-theme-tertiary {
+    background-color: var(--bg-tertiary);
+  }
+  
   .text-theme-primary {
     color: var(--text-primary);
   }
   
   .text-theme-secondary {
     color: var(--text-secondary);
+  }
+  
+  .text-theme-tertiary {
+    color: var(--text-tertiary);
   }
   
   .border-theme {
@@ -51,4 +59,25 @@
   .shadow-theme-lg {
     box-shadow: var(--shadow-lg);
   }
+  
+  .shadow-theme-xl {
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* RTL support improvements */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="ltr"] {
+  text-align: left;
 }

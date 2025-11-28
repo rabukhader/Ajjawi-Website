@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import brandsData from '../../data/brands.json';
+import { useBrands } from '../hooks/useBrands';
 
 const Brands = () => {
   const { t } = useLanguage();
+  const { brands, loading, error } = useBrands();
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -23,6 +24,28 @@ const Brands = () => {
       opacity: 1,
     },
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-theme-secondary">{t('common.loading')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{t('common.error')}</p>
+          <p className="text-theme-secondary">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-20 bg-theme-secondary">
@@ -45,7 +68,7 @@ const Brands = () => {
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-5xl mx-auto"
         >
-          {brandsData.map((brand) => (
+          {brands.map((brand) => (
             <motion.div
               key={brand.id}
               variants={itemVariants}
