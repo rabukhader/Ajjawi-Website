@@ -35,6 +35,9 @@ export function mapApiProductToProduct(apiProduct: ApiProduct, brandId: string):
     brandId: brandId || apiProduct.brandId.toString(),
     description: `Quantity: ${apiProduct.quantity}, Packaging: ${apiProduct.packaging}, Unit: ${apiProduct.unit}`,
     type: mapProductType(apiProduct.unit, apiProduct.packaging),
+    categoryId: apiProduct.categoryId,
+    categoryName: apiProduct.categoryName,
+    productOrder: apiProduct.productOrder,
     // Note: image, price not provided by API, will be undefined
   };
 }

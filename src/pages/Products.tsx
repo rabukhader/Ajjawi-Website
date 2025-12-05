@@ -56,6 +56,7 @@ const Products = () => {
   const { products: productsData, loading: productsLoading, error: productsError } = useProducts();
   const { brands: brandsData, loading: brandsLoading, error: brandsError } = useBrands();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const brandMap = useMemo(() => {
@@ -66,21 +67,38 @@ const Products = () => {
     return map;
   }, [brandsData]);
 
-  const filteredProducts = useMemo(() => {
-    if (selectedBrands.length === 0 && searchQuery.trim() === '') {
-      return productsData;
-    }
+  // Extract unique categories from products
+  const categories = useMemo(() => {
+    const categoryMap = new Map<number, string>();
+    productsData.forEach((product) => {
+      if (product.categoryId !== undefined && product.categoryName) {
+        categoryMap.set(product.categoryId, product.categoryName);
+      }
+    });
+    return Array.from(categoryMap.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [productsData]);
 
+  const filteredProducts = useMemo(() => {
     const trimmedQuery = searchQuery.trim().toLowerCase();
     const hasSearchQuery = trimmedQuery !== '';
     const hasBrandFilter = selectedBrands.length > 0;
+    const hasCategoryFilter = selectedCategories.length > 0;
     const selectedBrandsSet = hasBrandFilter ? new Set(selectedBrands) : null;
+    const selectedCategoriesSet = hasCategoryFilter ? new Set(selectedCategories) : null;
 
-    return productsData.filter((product) => {
+    const filtered = productsData.filter((product) => {
+      // Brand filter
       const matchesBrand = !hasBrandFilter || (selectedBrandsSet?.has(product.brandId) ?? false);
-      
       if (!matchesBrand) return false;
 
+      // Category filter
+      const matchesCategory = !hasCategoryFilter || 
+        (product.categoryId !== undefined && selectedCategoriesSet?.has(product.categoryId));
+      if (!matchesCategory) return false;
+
+      // Search query filter
       if (!hasSearchQuery) return true;
 
       const productName = product.name.toLowerCase();
@@ -88,7 +106,17 @@ const Products = () => {
       
       return productName.includes(trimmedQuery) || productDescription.includes(trimmedQuery);
     });
-  }, [selectedBrands, searchQuery, productsData]);
+
+    // Sort by productOrder if available, then by name
+    return filtered.sort((a, b) => {
+      if (a.productOrder !== undefined && b.productOrder !== undefined) {
+        return a.productOrder - b.productOrder;
+      }
+      if (a.productOrder !== undefined) return -1;
+      if (b.productOrder !== undefined) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, [selectedBrands, selectedCategories, searchQuery, productsData]);
 
   const handleBrandToggle = useCallback((brandId: string) => {
     setSelectedBrands((prev) => {
@@ -96,6 +124,15 @@ const Products = () => {
         return prev.filter((id) => id !== brandId);
       }
       return [...prev, brandId];
+    });
+  }, []);
+
+  const handleCategoryToggle = useCallback((categoryId: number) => {
+    setSelectedCategories((prev) => {
+      if (prev.includes(categoryId)) {
+        return prev.filter((id) => id !== categoryId);
+      }
+      return [...prev, categoryId];
     });
   }, []);
 
@@ -164,6 +201,39 @@ const Products = () => {
                 />
               </div>
 
+              {/* Category Filter */}
+              {categories.length > 0 && (
+                <div className="mb-8">
+                  <label className="block text-sm font-semibold mb-4 text-theme-secondary">
+                    {t('products.filters.category')}
+                  </label>
+                  <div className="space-y-3">
+                    {categories.map((category) => (
+                      <label
+                        key={category.id}
+                        className="flex items-center cursor-pointer hover:text-primary-600 transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(category.id)}
+                          onChange={() => handleCategoryToggle(category.id)}
+                          className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500 focus:ring-2"
+                        />
+                        <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{category.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                  {selectedCategories.length > 0 && (
+                    <button
+                      onClick={() => setSelectedCategories([])}
+                      className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                    >
+                      {t('products.filters.clearCategories')}
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Brand Filter */}
               <div>
                 <label className="block text-sm font-semibold mb-4 text-theme-secondary">
@@ -190,7 +260,7 @@ const Products = () => {
                     onClick={() => setSelectedBrands([])}
                     className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                   >
-                    {t('products.filters.clear')}
+                    {t('products.filters.clearBrands')}
                   </button>
                 )}
               </div>
@@ -210,10 +280,11 @@ const Products = () => {
             {filteredProducts.length === 0 ? (
               <div className="bg-theme-card rounded-lg shadow-theme p-12 text-center">
                 <p className="text-theme-secondary text-lg">{t('products.noResults')}</p>
-                {productsData.length > 0 && (selectedBrands.length > 0 || searchQuery.trim() !== '') && (
+                {productsData.length > 0 && (selectedBrands.length > 0 || selectedCategories.length > 0 || searchQuery.trim() !== '') && (
                   <button
                     onClick={() => {
                       setSelectedBrands([]);
+                      setSelectedCategories([]);
                       setSearchQuery('');
                     }}
                     className="mt-4 text-primary-600 hover:text-primary-700 font-semibold"

@@ -8,6 +8,9 @@ export interface ApiProduct {
   quantity: string;
   packaging: string;
   unit: string;
+  categoryId: number;
+  categoryName: string;
+  productOrder: number;
 }
 
 export interface ApiBrand {

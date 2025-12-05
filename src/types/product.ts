@@ -16,6 +16,14 @@ export const ProductType = {
 
 export type ProductType = typeof ProductType[keyof typeof ProductType];
 
+// Category enum - can be extended based on backend categories
+export const Category = {
+  OTHERS: 0,
+  // Add more categories as needed based on backend response
+} as const;
+
+export type Category = typeof Category[keyof typeof Category];
+
 export interface Product {
   id: string;
   name: string;
@@ -26,6 +34,9 @@ export interface Product {
   descriptionAr?: string; // Arabic description
   price?: string;
   type: ProductType; // ProductType from the const above (includes empty string as UNKNOWN)
+  categoryId?: number; // Category ID from backend
+  categoryName?: string; // Category name from backend
+  productOrder?: number; // Product order for sorting
 }
 
 export interface Brand {
