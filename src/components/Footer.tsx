@@ -41,12 +41,15 @@ const Footer = () => {
                   className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
                   style={{
                     backgroundColor: 'var(--bg-secondary)',
+                    color: 'var(--text-primary)',
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--accent-primary)';
+                    e.currentTarget.style.color = 'var(--text-inverse)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'var(--bg-secondary)';
+                    e.currentTarget.style.color = 'var(--text-primary)';
                   }}
                   aria-label={social.name}
                 >

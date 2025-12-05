@@ -1,8 +1,8 @@
 import type { Product } from '../types/product';
-import type { ApiProduct, BrandsApiResponse } from '../types/api-response';
+import type { ApiProduct } from '../types/api-response';
 import { API_ENDPOINTS } from '../config/api';
 import { apiService } from '../services/api.service';
-import { mapApiProductToProduct, mapApiBrandsToBrands } from '../mappers/brand.mapper';
+import { mapApiProductToProduct } from '../mappers/brand.mapper';
 
 export interface IProductRepository {
   getAll(): Promise<Product[]>;
@@ -16,19 +16,13 @@ export interface IProductRepository {
 class ProductRepository implements IProductRepository {
   async getAll(): Promise<Product[]> {
     try {
-      // API returns BrandsApiResponse (same structure as brands API)
-      const apiResponse = await apiService.get<BrandsApiResponse>(API_ENDPOINTS.PRODUCTS.LIST);
+      // API returns a list of products directly
+      const apiProducts = await apiService.get<ApiProduct[]>(API_ENDPOINTS.PRODUCTS.LIST);
       
-      // Transform API response to internal Brand type
-      const brands = mapApiBrandsToBrands(apiResponse);
-      
-      // Flatten products from all brands
-      const products: Product[] = [];
-      brands.forEach((brand) => {
-        if (brand.products) {
-          products.push(...brand.products);
-        }
-      });
+      // Transform API products to internal Product type
+      const products = apiProducts.map((apiProduct) => 
+        mapApiProductToProduct(apiProduct, apiProduct.brandId.toString())
+      );
       
       return products;
     } catch (error) {

@@ -1,8 +1,55 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProducts } from '../hooks/useProducts';
 import { useBrands } from '../hooks/useBrands';
+import type { Product } from '../types/product';
+
+interface ProductCardProps {
+  product: Product;
+  brandName: string;
+  t: (key: string) => string;
+}
+
+const ProductCard = memo(({ product, brandName, t }: ProductCardProps) => {
+  return (
+    <div className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-all duration-200 hover:-translate-y-1">
+      {product.image && (
+        <div className="relative h-64 overflow-hidden">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        </div>
+      )}
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-xl font-semibold text-theme-primary">{product.name}</h3>
+          <span className="text-sm text-theme-secondary">
+            {brandName}
+          </span>
+        </div>
+        {product.description && (
+          <p className="text-theme-secondary mb-4 line-clamp-2">{product.description}</p>
+        )}
+        {product.type && product.type.trim() !== '' && (
+          <p className="text-sm text-theme-secondary mb-2">
+            {t('products.type')}: {product.type}
+          </p>
+        )}
+        {product.price && (
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-bold text-primary-600">{product.price}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+ProductCard.displayName = 'ProductCard';
 
 const Products = () => {
   const { t } = useLanguage();
@@ -11,22 +58,46 @@ const Products = () => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredProducts = useMemo(() => {
-    return productsData.filter((product) => {
-      const matchesBrand =
-        selectedBrands.length === 0 || selectedBrands.includes(product.brandId);
-      const matchesSearch =
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (product.description || '').toLowerCase().includes(searchQuery.toLowerCase());
-      return matchesBrand && matchesSearch;
+  const brandMap = useMemo(() => {
+    const map = new Map<string, string>();
+    brandsData.forEach((brand) => {
+      map.set(brand.id, brand.name);
     });
-  }, [selectedBrands, searchQuery]);
+    return map;
+  }, [brandsData]);
 
-  const handleBrandToggle = (brandId: string) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brandId) ? prev.filter((id) => id !== brandId) : [...prev, brandId]
-    );
-  };
+  const filteredProducts = useMemo(() => {
+    if (selectedBrands.length === 0 && searchQuery.trim() === '') {
+      return productsData;
+    }
+
+    const trimmedQuery = searchQuery.trim().toLowerCase();
+    const hasSearchQuery = trimmedQuery !== '';
+    const hasBrandFilter = selectedBrands.length > 0;
+    const selectedBrandsSet = hasBrandFilter ? new Set(selectedBrands) : null;
+
+    return productsData.filter((product) => {
+      const matchesBrand = !hasBrandFilter || (selectedBrandsSet?.has(product.brandId) ?? false);
+      
+      if (!matchesBrand) return false;
+
+      if (!hasSearchQuery) return true;
+
+      const productName = product.name.toLowerCase();
+      const productDescription = (product.description || '').toLowerCase();
+      
+      return productName.includes(trimmedQuery) || productDescription.includes(trimmedQuery);
+    });
+  }, [selectedBrands, searchQuery, productsData]);
+
+  const handleBrandToggle = useCallback((brandId: string) => {
+    setSelectedBrands((prev) => {
+      if (prev.includes(brandId)) {
+        return prev.filter((id) => id !== brandId);
+      }
+      return [...prev, brandId];
+    });
+  }, []);
 
   if (productsLoading || brandsLoading) {
     return (
@@ -139,62 +210,29 @@ const Products = () => {
             {filteredProducts.length === 0 ? (
               <div className="bg-theme-card rounded-lg shadow-theme p-12 text-center">
                 <p className="text-theme-secondary text-lg">{t('products.noResults')}</p>
-                <button
-                  onClick={() => {
-                    setSelectedBrands([]);
-                    setSearchQuery('');
-                  }}
-                  className="mt-4 text-primary-600 hover:text-primary-700 font-semibold"
-                >
-                  {t('products.noResults.clear')}
-                </button>
+                {productsData.length > 0 && (selectedBrands.length > 0 || searchQuery.trim() !== '') && (
+                  <button
+                    onClick={() => {
+                      setSelectedBrands([]);
+                      setSearchQuery('');
+                    }}
+                    className="mt-4 text-primary-600 hover:text-primary-700 font-semibold"
+                  >
+                    {t('products.noResults.clear')}
+                  </button>
+                )}
               </div>
             ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {filteredProducts.map((product, index) => (
-                  <motion.div
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard
                     key={product.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    whileHover={{ y: -10, scale: 1.02 }}
-                    className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-shadow"
-                  >
-                    <div className="relative h-64 overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-semibold text-theme-primary">{product.name}</h3>
-                        <span className="text-sm text-theme-secondary">
-                          {brandsData.find((b) => b.id === product.brandId)?.name}
-                        </span>
-                      </div>
-                      {product.description && (
-                        <p className="text-theme-secondary mb-4 line-clamp-2">{product.description}</p>
-                      )}
-                      {product.type && product.type.trim() !== '' && (
-                        <p className="text-sm text-theme-secondary mb-2">
-                          {t('products.type')}: {product.type}
-                        </p>
-                      )}
-                      {product.price && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-2xl font-bold text-primary-600">{product.price}</span>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
+                    product={product}
+                    brandName={brandMap.get(product.brandId) || ''}
+                    t={t}
+                  />
                 ))}
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
