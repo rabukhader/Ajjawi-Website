@@ -3,10 +3,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../src/contexts/LanguageContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Brand } from '../../src/types/product';
 import { brandRepository } from '../../src/repositories/brand.repository';
 import { useProducts } from '../../src/hooks/useProducts';
+import { useCategories } from '../../src/hooks/useCategories';
+import ProductCard from '../../src/components/ProductCard';
 
 export default function BrandDetail() {
   const router = useRouter();
@@ -18,9 +20,19 @@ export default function BrandDetail() {
   
   // Fetch products for this brand
   const { products: allProducts, loading: productsLoading } = useProducts();
+  const { categories: categoriesData } = useCategories();
   
   // Filter products by brandId
   const brandProducts = allProducts.filter((product) => product.brandId === id);
+
+  // Create a map of categoryId to category name
+  const categoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    categoriesData.forEach((category) => {
+      map.set(parseInt(category.id), category.name);
+    });
+    return map;
+  }, [categoriesData]);
 
   useEffect(() => {
     const fetchBrand = async () => {
@@ -82,7 +94,7 @@ export default function BrandDetail() {
             className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6"
           >
             <svg
-              className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2"
+              className="w-5 h-5 mr-2 rtl:mr-0 rtl:ml-2 rtl:scale-x-[-1]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -130,36 +142,14 @@ export default function BrandDetail() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-shadow"
                 >
-                  <div className="relative h-64 overflow-hidden">
-                    {product.image && (
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    )}
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2 text-theme-primary">{product.name}</h3>
-                    {product.description && (
-                      <p className="text-theme-secondary mb-4 line-clamp-3">{product.description}</p>
-                    )}
-                    {product.type && product.type.trim() !== '' && (
-                      <p className="text-sm text-theme-secondary mb-2">
-                        {t('products.type')}: {product.type}
-                      </p>
-                    )}
-                    {product.price && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-primary-600">{product.price}</span>
-                      </div>
-                    )}
-                  </div>
+                  <ProductCard
+                    product={product}
+                    brandName={brand.name}
+                    categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
+                    t={t}
+                    showBrand={false}
+                  />
                 </motion.div>
               ))}
             </motion.div>

@@ -1,61 +1,11 @@
-import { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useProducts } from '../src/hooks/useProducts';
 import { useBrands } from '../src/hooks/useBrands';
 import { useCategories } from '../src/hooks/useCategories';
-import type { Product } from '../src/types/product';
-
-interface ProductCardProps {
-  product: Product;
-  brandName: string;
-  categoryName?: string;
-  t: (key: string) => string;
-}
-
-const ProductCard = memo(({ product, brandName, categoryName, t }: ProductCardProps) => {
-  return (
-    <div className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-all duration-200 hover:-translate-y-1">
-      <div className="relative h-64 overflow-hidden">
-        {product.image && (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover"
-            unoptimized
-          />
-        )}
-      </div>
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-semibold text-theme-primary">{product.name}</h3>
-        </div>
-        <h4 className="text-sm text-theme-secondary">
-        {t('brand')}: {brandName}
-          </h4>
-        {categoryName && (
-          <h6 className="text-sm text-theme-secondary">
-          {t('products.category')}: {categoryName}
-          </h6>
-        )}
-        {product.type && product.type.trim() !== '' && (
-          <p className="text-sm text-theme-secondary mb-2">
-            {t('products.type')}: {product.type}
-          </p>
-        )}
-        {product.price && (
-          <div className="flex items-center justify-between">
-            <span className="text-2xl font-bold text-primary-600">{product.price}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-});
-
-ProductCard.displayName = 'ProductCard';
+import ProductCard from '../src/components/ProductCard';
 
 export default function Products() {
   const { t } = useLanguage();
@@ -349,17 +299,17 @@ export default function Products() {
                         )}
                         {cols === 3 && (
                           <>
-                            <path d="M2 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
-                            <path d="M8 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1H9a1 1 0 01-1-1V4z" />
-                            <path d="M14 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1h-4a1 1 0 01-1-1V4z" />
+                            <rect x="1" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
+                            <rect x="6.5" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
+                            <rect x="12" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
                           </>
                         )}
                         {cols === 4 && (
                           <>
-                            <path d="M2 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
-                            <path d="M7 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1H8a1 1 0 01-1-1V4z" />
-                            <path d="M12 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1h-3a1 1 0 01-1-1V4z" />
-                            <path d="M17 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                            <rect x="0.5" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                            <rect x="4.75" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                            <rect x="9" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                            <rect x="13.25" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
                           </>
                         )}
                       </svg>
@@ -541,7 +491,7 @@ export default function Products() {
                 d="M5 10l7-7m0 0l7 7m-7-7v18"
               />
             </motion.svg>
-            <span className="absolute -top-12 right-0 bg-gray-900 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            <span className="absolute -top-12 right-0 rtl:right-auto rtl:left-0 bg-gray-900 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
               {t('products.scrollTop') || 'Back to top'}
             </span>
           </motion.button>

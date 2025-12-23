@@ -8,7 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 const Navbar = () => {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage, t, isRTL } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -171,11 +171,11 @@ const Navbar = () => {
 
                 {/* Mobile Menu Panel */}
                 <motion.div
-                  initial={{ x: '100%', opacity: 0 }}
+                  initial={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: '100%', opacity: 0 }}
+                  exit={{ x: isRTL ? '-100%' : '100%', opacity: 0 }}
                   transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                  className="fixed top-0 right-0 h-full w-80 max-w-[85vw] z-50 md:hidden shadow-2xl"
+                  className="fixed top-0 right-0 rtl:right-auto rtl:left-0 h-full w-80 max-w-[85vw] z-50 md:hidden shadow-2xl"
                   style={{
                     backgroundColor: 'var(--navbar-bg)',
                   }}
@@ -220,7 +220,7 @@ const Navbar = () => {
                               {isActive(link.path) && (
                                 <motion.div
                                   layoutId="mobile-active-indicator"
-                                  className="absolute left-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full"
+                                  className="absolute left-0 rtl:left-auto rtl:right-0 top-0 bottom-0 w-1 bg-primary-600 rounded-r-full rtl:rounded-l-full rtl:rounded-r-none"
                                   initial={false}
                                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                                 />
@@ -246,8 +246,10 @@ const Navbar = () => {
                               <span className="relative z-10 flex items-center w-full">
                                 <span className="flex-1">{link.label}</span>
                                 <svg
-                                  className={`w-5 h-5 transition-transform duration-300 ${
-                                    isActive(link.path) ? 'translate-x-2' : 'translate-x-0 group-hover:translate-x-2'
+                                  className={`w-5 h-5 transition-transform duration-300 rtl:scale-x-[-1] ${
+                                    isActive(link.path) 
+                                      ? 'translate-x-2 rtl:-translate-x-2' 
+                                      : 'translate-x-0 group-hover:translate-x-2 rtl:group-hover:-translate-x-2'
                                   }`}
                                   fill="none"
                                   stroke="currentColor"
