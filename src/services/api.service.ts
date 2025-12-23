@@ -23,7 +23,9 @@ class ApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseURL}${endpoint}`;
+    // If baseURL is empty (client-side), use relative URL to Next.js API routes
+    // Otherwise use full URL (server-side direct to backend)
+    const url = this.baseURL ? `${this.baseURL}${endpoint}` : endpoint;
     
     const config: RequestInit = {
       ...options,

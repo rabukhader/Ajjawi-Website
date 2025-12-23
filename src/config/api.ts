@@ -30,9 +30,12 @@ export const API_ENDPOINTS = {
   },
 } as const;
 
-// API Base URL - Backend endpoint
-// In Next.js, use NEXT_PUBLIC_ prefix for client-side environment variables
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://3.239.1.159:8089';
+// API Base URL - Use Next.js API routes as proxy to avoid CORS and mixed content issues
+// Client-side: use relative URLs to Next.js API routes (empty string)
+// Server-side: can use direct backend URL if needed (but API routes handle this)
+export const API_BASE_URL = typeof window !== 'undefined' 
+  ? '' // Client-side: use relative URLs to Next.js API routes
+  : ''; // Server-side: also use relative URLs (API routes will proxy)
 
 // API Configuration
 export const API_CONFIG = {
