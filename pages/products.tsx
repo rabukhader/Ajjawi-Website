@@ -18,6 +18,8 @@ export default function Products() {
   const [gridColumns, setGridColumns] = useState(3); // Default to 3 columns
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 20;
 
   // Scroll to top functionality
   useEffect(() => {
@@ -99,6 +101,22 @@ export default function Products() {
     });
   }, [selectedBrands, selectedCategories, searchQuery, productsData]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedBrands, selectedCategories, searchQuery]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const startIndex = (currentPage - 1) * productsPerPage;
+  const endIndex = startIndex + productsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   const handleBrandToggle = useCallback((brandId: string) => {
     setSelectedBrands((prev) => {
       if (prev.includes(brandId)) {
@@ -106,6 +124,7 @@ export default function Products() {
       }
       return [...prev, brandId];
     });
+    setCurrentPage(1); // Reset to first page
   }, []);
 
   const handleCategoryToggle = useCallback((categoryId: number) => {
@@ -115,6 +134,12 @@ export default function Products() {
       }
       return [...prev, categoryId];
     });
+    setCurrentPage(1); // Reset to first page
+  }, []);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page
   }, []);
 
   if (productsLoading || brandsLoading || categoriesLoading) {
@@ -175,7 +200,7 @@ export default function Products() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   placeholder={t('products.filters.search')}
                   className="w-full px-4 py-2 border border-theme rounded-lg bg-theme-primary text-theme-primary focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   style={{ borderColor: 'var(--border-primary)' }}
@@ -206,7 +231,10 @@ export default function Products() {
                   </div>
                   {selectedCategories.length > 0 && (
                     <button
-                      onClick={() => setSelectedCategories([])}
+                      onClick={() => {
+                        setSelectedCategories([]);
+                        setCurrentPage(1);
+                      }}
                       className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                     >
                       {t('products.filters.clearCategories')}
@@ -238,7 +266,10 @@ export default function Products() {
                 </div>
                 {selectedBrands.length > 0 && (
                   <button
-                    onClick={() => setSelectedBrands([])}
+                    onClick={() => {
+                      setSelectedBrands([]);
+                      setCurrentPage(1);
+                    }}
                     className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                   >
                     {t('products.filters.clearBrands')}
@@ -252,6 +283,11 @@ export default function Products() {
                   {t('products.filters.results')} <span className="font-semibold">{filteredProducts.length}</span> {t('products.filters.of')}{' '}
                   <span className="font-semibold">{productsData.length}</span> {t('products.filters.products')}
                 </p>
+                {totalPages > 1 && (
+                  <p className="text-sm text-theme-secondary mt-2">
+                    {t('products.pagination.page') || 'Page'} <span className="font-semibold">{currentPage}</span> {t('products.pagination.of') || 'of'} <span className="font-semibold">{totalPages}</span>
+                  </p>
+                )}
               </div>
             </div>
           </motion.aside>
@@ -355,12 +391,15 @@ export default function Products() {
                 animate={{ scale: 1, opacity: 1 }}
                 className="text-sm text-theme-secondary"
               >
-                <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
+                <span className="font-semibold text-primary-600">
+                  {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}
+                </span>{' '}
+                {t('products.pagination.of') || 'of'} <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
                 {filteredProducts.length === 1 ? t('products.filters.product') || 'product' : t('products.filters.products') || 'products'}
               </motion.div>
             </div>
 
-            {filteredProducts.length === 0 ? (
+            {paginatedProducts.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -374,6 +413,7 @@ export default function Products() {
                       setSelectedBrands([]);
                       setSelectedCategories([]);
                       setSearchQuery('');
+                      setCurrentPage(1);
                     }}
                     className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                   >
@@ -402,7 +442,7 @@ export default function Products() {
                 }
               >
                 <AnimatePresence mode="popLayout">
-                  {filteredProducts.map((product, index) => (
+                  {paginatedProducts.map((product, index) => (
                     <motion.div
                       key={product.id}
                       initial={{ opacity: 0, y: 20 }}
@@ -461,6 +501,83 @@ export default function Products() {
                 </AnimatePresence>
               </motion.div>
             )}
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-12 flex items-center justify-center gap-2"
+              >
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg transition-all ${
+                    currentPage === 1
+                      ? 'bg-theme-secondary text-theme-tertiary cursor-not-allowed'
+                      : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
+                  }`}
+                  aria-label="Previous page"
+                >
+                  <svg className="w-5 h-5 rtl:scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // Show first page, last page, current page, and pages around current
+                    const showPage = 
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1);
+
+                    if (!showPage) {
+                      // Show ellipsis
+                      if (page === currentPage - 2 || page === currentPage + 2) {
+                        return (
+                          <span key={page} className="px-2 text-theme-secondary">
+                            ...
+                          </span>
+                        );
+                      }
+                      return null;
+                    }
+
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-all ${
+                          currentPage === page
+                            ? 'bg-primary-600 text-white shadow-lg scale-110'
+                            : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
+                        }`}
+                        aria-label={`Page ${page}`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg transition-all ${
+                    currentPage === totalPages
+                      ? 'bg-theme-secondary text-theme-tertiary cursor-not-allowed'
+                      : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
+                  }`}
+                  aria-label="Next page"
+                >
+                  <svg className="w-5 h-5 rtl:scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
@@ -513,7 +630,10 @@ export default function Products() {
             >
               <span>&ldquo;{searchQuery}&rdquo;</span>
               <button
-                onClick={() => setSearchQuery('')}
+                onClick={() => {
+                  setSearchQuery('');
+                  setCurrentPage(1);
+                }}
                 className="hover:bg-primary-700 rounded-full p-1 transition-colors"
                 aria-label="Remove search"
               >

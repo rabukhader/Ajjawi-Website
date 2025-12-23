@@ -46,6 +46,8 @@ const translations = {
     'products.category': 'Category',
     'products.view': 'View',
     'products.scrollTop': 'Back to top',
+    'products.pagination.page': 'Page',
+    'products.pagination.of': 'of',
     
     // About Page
     'about.title': 'About Ajjawi',
@@ -163,6 +165,8 @@ const translations = {
     'products.category': 'الفئة',
     'products.view': 'عرض',
     'products.scrollTop': 'العودة إلى الأعلى',
+    'products.pagination.page': 'الصفحة',
+    'products.pagination.of': 'من',
     // About Page
     'about.title': 'من نحن',
     'about.subtitle': 'شركة غذائية رائدة ملتزمة بتقديم الجودة والتقليد والابتكار إلى مائدتك.',
