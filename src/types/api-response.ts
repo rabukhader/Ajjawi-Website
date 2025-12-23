@@ -16,9 +16,20 @@ export interface ApiProduct {
 export interface ApiBrand {
   id: number;
   name: string;
-  products: ApiProduct[];
+  imageUrl: string;
+  // Products are no longer returned in the brands API response
+  // They must be fetched separately from the products API
 }
 
 // API Response is a list of ApiBrand objects
 export type BrandsApiResponse = ApiBrand[];
+
+// Category API Response
+export interface ApiCategory {
+  id: number;
+  name: string;
+}
+
+// API Response is a list of ApiCategory objects
+export type CategoriesApiResponse = ApiCategory[];
 

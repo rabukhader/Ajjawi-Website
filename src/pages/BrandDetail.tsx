@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useState, useEffect } from 'react';
 import type { Brand } from '../types/product';
 import { brandRepository } from '../repositories/brand.repository';
+import { useProducts } from '../hooks/useProducts';
 
 const BrandDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +12,12 @@ const BrandDetail = () => {
   const [brand, setBrand] = useState<Brand | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  
+  // Fetch products for this brand
+  const { products: allProducts, loading: productsLoading } = useProducts();
+  
+  // Filter products by brandId
+  const brandProducts = allProducts.filter((product) => product.brandId === id);
 
   useEffect(() => {
     const fetchBrand = async () => {
@@ -32,7 +39,7 @@ const BrandDetail = () => {
     fetchBrand();
   }, [id]);
 
-  if (loading) {
+  if (loading || productsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-theme-primary">
         <div className="text-center">
@@ -56,8 +63,6 @@ const BrandDetail = () => {
       </div>
     );
   }
-
-  const brandProducts = brand.products || [];
 
   return (
     <div className="min-h-screen py-20 bg-theme-secondary">
@@ -102,7 +107,9 @@ const BrandDetail = () => {
 
         {/* Products Grid */}
         <div>
-          <h2 className="text-3xl font-bold mb-8 text-theme-primary">{t('brand.detail.products')}</h2>
+          <h2 className="text-3xl font-bold mb-8 text-theme-primary">
+            {t('brand.detail.products')} ({brandProducts.length})
+          </h2>
           {brandProducts.length === 0 ? (
             <div className="bg-theme-card rounded-lg shadow-theme p-8 text-center">
               <p className="text-theme-secondary">{t('brand.detail.noProducts')}</p>
@@ -123,15 +130,13 @@ const BrandDetail = () => {
                   whileHover={{ y: -10, scale: 1.02 }}
                   className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-shadow"
                 >
-                  {product.image && (
-                    <div className="relative h-64 overflow-hidden">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
+                  <div className="relative h-64 overflow-hidden">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2 text-theme-primary">{product.name}</h3>
                     {product.description && (

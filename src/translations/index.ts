@@ -24,7 +24,9 @@ const translations = {
     // Brands Page
     'brands.title': 'Our Brands',
     'brands.subtitle': 'Discover our diverse portfolio of premium food brands, each committed to excellence and bringing unique flavors to your table.',
-    
+    'brands.product': 'product',
+    'brands.products': 'products',
+    'brand': 'Brand',
     // Products Page
     'products.title': 'Our Products',
     'products.subtitle': 'Browse our complete catalog of premium food products',
@@ -41,6 +43,7 @@ const translations = {
     'products.noResults': 'No products found matching your criteria.',
     'products.noResults.clear': 'Clear all filters',
     'products.type': 'Type',
+    'products.category': 'Category',
     
     // About Page
     'about.title': 'About Ajjawi',
@@ -135,6 +138,9 @@ const translations = {
     // Brands Page
     'brands.title': 'علاماتنا التجارية',
     'brands.subtitle': 'اكتشف محفظتنا المتنوعة من العلامات التجارية الغذائية المميزة، كل منها ملتزم بالتميز ويجلب نكهات فريدة إلى مائدتك.',
+    'brands.product': 'منتج',
+    'brands.products': 'منتجات',
+    'brand': 'العلامة التجارية',
     
     // Products Page
     'products.title': 'منتجاتنا',
@@ -152,7 +158,7 @@ const translations = {
     'products.noResults': 'لم يتم العثور على منتجات تطابق معاييرك.',
     'products.noResults.clear': 'مسح جميع المرشحات',
     'products.type': 'النوع',
-    
+    'products.category': 'الفئة',
     // About Page
     'about.title': 'من نحن',
     'about.subtitle': 'شركة غذائية رائدة ملتزمة بتقديم الجودة والتقليد والابتكار إلى مائدتك.',

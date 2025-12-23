@@ -19,6 +19,11 @@ export const API_ENDPOINTS = {
     DELETE: '/api/products/:id', // DELETE /api/products/:id - Delete product
   },
   
+  // Categories endpoints
+  CATEGORIES: {
+    LIST: '/api/categories', // GET /api/categories - Get all categories
+  },
+  
   // Contact endpoints
   CONTACT: {
     SUBMIT: '/api/contact', // POST /api/contact - Submit contact form

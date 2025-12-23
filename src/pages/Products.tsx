@@ -3,36 +3,38 @@ import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useProducts } from '../hooks/useProducts';
 import { useBrands } from '../hooks/useBrands';
+import { useCategories } from '../hooks/useCategories';
 import type { Product } from '../types/product';
 
 interface ProductCardProps {
   product: Product;
   brandName: string;
+  categoryName?: string;
   t: (key: string) => string;
 }
 
-const ProductCard = memo(({ product, brandName, t }: ProductCardProps) => {
+const ProductCard = memo(({ product, brandName, categoryName, t }: ProductCardProps) => {
   return (
     <div className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-all duration-200 hover:-translate-y-1">
-      {product.image && (
-        <div className="relative h-64 overflow-hidden">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        </div>
-      )}
+      <div className="relative h-64 overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </div>
       <div className="p-6">
         <div className="flex items-center justify-between mb-2">
           <h3 className="text-xl font-semibold text-theme-primary">{product.name}</h3>
-          <span className="text-sm text-theme-secondary">
-            {brandName}
-          </span>
         </div>
-        {product.description && (
-          <p className="text-theme-secondary mb-4 line-clamp-2">{product.description}</p>
+        <h4 className="text-sm text-theme-secondary">
+        {t('brand')}: {brandName}
+          </h4>
+        {categoryName && (
+          <h6 className="text-sm text-theme-secondary">
+          {t('products.category')}: {categoryName}
+          </h6>
         )}
         {product.type && product.type.trim() !== '' && (
           <p className="text-sm text-theme-secondary mb-2">
@@ -55,6 +57,7 @@ const Products = () => {
   const { t } = useLanguage();
   const { products: productsData, loading: productsLoading, error: productsError } = useProducts();
   const { brands: brandsData, loading: brandsLoading, error: brandsError } = useBrands();
+  const { categories: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategories();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -67,18 +70,21 @@ const Products = () => {
     return map;
   }, [brandsData]);
 
-  // Extract unique categories from products
-  const categories = useMemo(() => {
-    const categoryMap = new Map<number, string>();
-    productsData.forEach((product) => {
-      if (product.categoryId !== undefined && product.categoryName) {
-        categoryMap.set(product.categoryId, product.categoryName);
-      }
+  // Create a map of categoryId to category name from the categories API
+  const categoryMap = useMemo(() => {
+    const map = new Map<number, string>();
+    categoriesData.forEach((category) => {
+      map.set(parseInt(category.id), category.name);
     });
-    return Array.from(categoryMap.entries())
-      .map(([id, name]) => ({ id, name }))
+    return map;
+  }, [categoriesData]);
+
+  // Convert categories to array format for the filter, sorted by name
+  const categories = useMemo(() => {
+    return categoriesData
+      .map((category) => ({ id: parseInt(category.id), name: category.name }))
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [productsData]);
+  }, [categoriesData]);
 
   const filteredProducts = useMemo(() => {
     const trimmedQuery = searchQuery.trim().toLowerCase();
@@ -136,7 +142,7 @@ const Products = () => {
     });
   }, []);
 
-  if (productsLoading || brandsLoading) {
+  if (productsLoading || brandsLoading || categoriesLoading) {
     return (
       <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
         <div className="text-center">
@@ -147,13 +153,13 @@ const Products = () => {
     );
   }
 
-  if (productsError || brandsError) {
+  if (productsError || brandsError || categoriesError) {
     return (
       <div className="min-h-screen py-20 bg-theme-secondary flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4 text-lg">{t('common.error')}</p>
           <p className="text-theme-secondary">
-            {productsError?.message || brandsError?.message || 'Failed to load data'}
+            {productsError?.message || brandsError?.message || categoriesError?.message || 'Failed to load data'}
           </p>
         </div>
       </div>
@@ -300,6 +306,7 @@ const Products = () => {
                     key={product.id}
                     product={product}
                     brandName={brandMap.get(product.brandId) || ''}
+                    categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
                     t={t}
                   />
                 ))}

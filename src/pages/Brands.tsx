@@ -2,10 +2,26 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useBrands } from '../hooks/useBrands';
+import { useProducts } from '../hooks/useProducts';
+import { useMemo } from 'react';
 
 const Brands = () => {
   const { t } = useLanguage();
-  const { brands, loading, error } = useBrands();
+  const { brands, loading: brandsLoading, error: brandsError } = useBrands();
+  const { products, loading: productsLoading } = useProducts();
+
+  // Create a map of brandId to product count
+  const productCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    products.forEach((product) => {
+      const count = counts.get(product.brandId) || 0;
+      counts.set(product.brandId, count + 1);
+    });
+    return counts;
+  }, [products]);
+
+  const loading = brandsLoading || productsLoading;
+  const error = brandsError;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -85,24 +101,18 @@ const Brands = () => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <h2 className="text-3xl font-bold text-theme-primary">{brand.name}</h2>
+                    <div>
+                      <h2 className="text-3xl font-bold text-theme-primary">{brand.name}</h2>
+                      {productCounts.has(brand.id) && (
+                        <p className="text-sm text-theme-secondary mt-1">
+                          {productCounts.get(brand.id)} {productCounts.get(brand.id) === 1 ? t('brands.product') : t('brands.products')}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   <p className="text-theme-secondary mb-6 leading-relaxed">{brand.description}</p>
                   <div className="flex items-center text-primary-600 font-semibold group">
                     <span>{t('home.brands.view')}</span>
-                    <svg
-                      className="w-5 h-5 ml-2 rtl:ml-0 rtl:mr-2 transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
                   </div>
                 </div>
               </Link>

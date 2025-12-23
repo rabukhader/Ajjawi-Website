@@ -49,9 +49,9 @@ export function mapApiBrandToBrand(apiBrand: ApiBrand): Brand {
   return {
     id: brandId,
     name: apiBrand.name,
-    logo: '', // Not provided by API, will use placeholder or default
+    logo: apiBrand.imageUrl, // Map imageUrl from API to logo
     description: '', // Not provided by API
-    products: apiBrand.products.map((product) => mapApiProductToProduct(product, brandId)),
+    products: [], // Products are fetched separately from the products API
   };
 }
 
