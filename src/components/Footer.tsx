@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Footer = () => {
@@ -66,7 +66,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/"
+                  href="/"
                   className="transition-colors"
                   style={{ color: 'var(--footer-text-secondary)' }}
                   onMouseEnter={(e) => {
@@ -81,7 +81,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/brands"
+                  href="/brands"
                   className="transition-colors"
                   style={{ color: 'var(--footer-text-secondary)' }}
                   onMouseEnter={(e) => {
@@ -96,7 +96,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/products"
+                  href="/products"
                   className="transition-colors"
                   style={{ color: 'var(--footer-text-secondary)' }}
                   onMouseEnter={(e) => {
@@ -111,7 +111,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/about"
+                  href="/about"
                   className="transition-colors"
                   style={{ color: 'var(--footer-text-secondary)' }}
                   onMouseEnter={(e) => {
@@ -126,7 +126,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className="transition-colors"
                   style={{ color: 'var(--footer-text-secondary)' }}
                   onMouseEnter={(e) => {

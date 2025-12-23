@@ -31,7 +31,8 @@ export const API_ENDPOINTS = {
 } as const;
 
 // API Base URL - Backend endpoint
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://3.239.1.159:8089';
+// In Next.js, use NEXT_PUBLIC_ prefix for client-side environment variables
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://3.239.1.159:8089';
 
 // API Configuration
 export const API_CONFIG = {

@@ -13,16 +13,26 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    const savedLang = localStorage.getItem('language') as Language;
-    return savedLang || 'en';
-  });
+  const [language, setLanguageState] = useState<Language>('en');
+  const [mounted, setMounted] = useState(false);
+
+  // Initialize language from localStorage on client side only
+  useEffect(() => {
+    setMounted(true);
+    const savedLang = (typeof window !== 'undefined' && localStorage.getItem('language')) as Language;
+    if (savedLang) {
+      setLanguageState(savedLang);
+    }
+  }, []);
 
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-    localStorage.setItem('language', language);
-  }, [language]);
+    if (!mounted) return;
+    if (typeof window !== 'undefined') {
+      document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = language;
+      localStorage.setItem('language', language);
+    }
+  }, [language, mounted]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);

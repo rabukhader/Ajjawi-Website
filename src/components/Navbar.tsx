@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
-  const location = useLocation();
+  const router = useRouter();
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -20,9 +21,9 @@ const Navbar = () => {
 
   const isActive = (path: string) => {
     if (path === '/') {
-      return location.pathname === '/';
+      return router.pathname === '/';
     }
-    return location.pathname.startsWith(path);
+    return router.pathname.startsWith(path);
   };
 
   return (
@@ -38,7 +39,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2">
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent"
@@ -51,7 +52,7 @@ const Navbar = () => {
             {navLinks.map((link) => (
               <Link
                 key={link.path}
-                to={link.path}
+                href={link.path}
                 className={`relative px-3 py-2 font-medium transition-colors ${
                   isActive(link.path)
                     ? 'text-primary-600'
@@ -207,7 +208,7 @@ const Navbar = () => {
                             transition={{ delay: index * 0.1, type: 'spring', stiffness: 100 }}
                           >
                             <Link
-                              to={link.path}
+                              href={link.path}
                               onClick={() => setIsMobileMenuOpen(false)}
                               className={`group relative px-4 py-3 font-medium transition-all duration-300 rounded-xl flex items-center ${
                                 isActive(link.path)
