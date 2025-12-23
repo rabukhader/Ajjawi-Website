@@ -14,8 +14,8 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export interface BrandsResponse extends ApiResponse<Brand[]> {}
-export interface BrandResponse extends ApiResponse<Brand> {}
-export interface ProductsResponse extends ApiResponse<Product[]> {}
-export interface ProductResponse extends ApiResponse<Product> {}
+export type BrandsResponse = ApiResponse<Brand[]>;
+export type BrandResponse = ApiResponse<Brand>;
+export type ProductsResponse = ApiResponse<Product[]>;
+export type ProductResponse = ApiResponse<Product>;
 

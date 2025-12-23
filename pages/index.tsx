@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { heroImages } from '../data/hero-images';
 import homeContent from '../data/home-content.json';
@@ -19,7 +20,7 @@ export default function Home() {
     }, 5000);
 
     return () => clearInterval(slideInterval);
-  }, [heroImages.length]);
+  }, []);
 
   useEffect(() => {
     const testimonialInterval = setInterval(() => {
@@ -65,11 +66,15 @@ export default function Home() {
               currentSlide === index ? 'z-10' : 'z-0'
             }`}
           >
-            <img
-              src={image}
-              alt={`Hero slide ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={image}
+                alt={`Hero slide ${index + 1}`}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
             <div className="absolute inset-0 bg-black/40"></div>
           </motion.div>
         ))}
@@ -182,11 +187,13 @@ export default function Home() {
                   }`}
                 >
                   <div className="bg-theme-card rounded-xl shadow-theme-lg p-8 h-full flex flex-col items-center justify-center text-center">
-                    <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-primary-200">
-                      <img
+                    <div className="w-20 h-20 rounded-full overflow-hidden mb-6 ring-4 ring-primary-200 relative">
+                      <Image
                         src={testimonial.image}
                         alt={language === 'ar' ? testimonial.nameAr : testimonial.name}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        unoptimized
                       />
                     </div>
                     <div className="flex mb-4">
@@ -202,7 +209,7 @@ export default function Home() {
                       ))}
                     </div>
                     <p className="text-lg text-theme-secondary mb-6 italic leading-relaxed">
-                      "{language === 'ar' ? testimonial.textAr : testimonial.text}"
+                      &ldquo;{language === 'ar' ? testimonial.textAr : testimonial.text}&rdquo;
                     </p>
                     <div>
                       <h4 className="text-xl font-bold text-theme-primary mb-1">
@@ -319,11 +326,13 @@ export default function Home() {
                 className="relative group cursor-pointer overflow-hidden rounded-lg shadow-theme hover:shadow-theme-lg transition-shadow"
                 onClick={() => setSelectedPhoto(photo.id)}
               >
-                <div className="aspect-square overflow-hidden">
-                  <img
+                <div className="aspect-square overflow-hidden relative">
+                  <Image
                     src={photo.url}
                     alt={language === 'ar' ? photo.titleAr : photo.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    unoptimized
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
@@ -362,13 +371,18 @@ export default function Home() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <img
-              src={homeContent.photos.find(p => p.id === selectedPhoto)?.url}
-              alt={language === 'ar' 
-                ? homeContent.photos.find(p => p.id === selectedPhoto)?.titleAr 
-                : homeContent.photos.find(p => p.id === selectedPhoto)?.title}
-              className="w-full h-auto rounded-lg"
-            />
+            {homeContent.photos.find(p => p.id === selectedPhoto)?.url && (
+              <Image
+                src={homeContent.photos.find(p => p.id === selectedPhoto)!.url}
+                alt={language === 'ar' 
+                  ? homeContent.photos.find(p => p.id === selectedPhoto)?.titleAr || ''
+                  : homeContent.photos.find(p => p.id === selectedPhoto)?.title || ''}
+                width={800}
+                height={600}
+                className="w-full h-auto rounded-lg"
+                unoptimized
+              />
+            )}
           </motion.div>
         </motion.div>
       )}

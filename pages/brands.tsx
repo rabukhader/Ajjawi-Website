@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useBrands } from '../src/hooks/useBrands';
 import { useProducts } from '../src/hooks/useProducts';
@@ -94,11 +95,13 @@ export default function Brands() {
               <Link href={brand.id ? `/brands/${brand.id}` : '#'}>
                 <div className="p-8">
                   <div className="flex items-center mb-6">
-                    <div className="w-24 h-24 rounded-full overflow-hidden mr-6 rtl:mr-0 rtl:ml-6 flex-shrink-0">
-                      <img
+                    <div className="w-24 h-24 rounded-full overflow-hidden mr-6 rtl:mr-0 rtl:ml-6 flex-shrink-0 relative">
+                      <Image
                         src={brand.logo}
                         alt={brand.name}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        unoptimized
                       />
                     </div>
                     <div>

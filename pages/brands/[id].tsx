@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { useState, useEffect } from 'react';
@@ -97,8 +98,8 @@ export default function BrandDetail() {
           </Link>
 
           <div className="flex flex-col md:flex-row items-center md:items-start">
-            <div className="w-32 h-32 rounded-full overflow-hidden mb-6 md:mb-0 md:mr-8 rtl:md:mr-0 rtl:md:ml-8 flex-shrink-0">
-              <img src={brand.logo} alt={brand.name} className="w-full h-full object-cover" />
+            <div className="w-32 h-32 rounded-full overflow-hidden mb-6 md:mb-0 md:mr-8 rtl:md:mr-0 rtl:md:ml-8 flex-shrink-0 relative">
+              <Image src={brand.logo} alt={brand.name} fill className="object-cover" unoptimized />
             </div>
             <div>
               <h1 className="text-4xl font-bold mb-4 text-theme-primary">{brand.name}</h1>
@@ -133,11 +134,15 @@ export default function BrandDetail() {
                   className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-shadow"
                 >
                   <div className="relative h-64 overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {product.image && (
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    )}
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2 text-theme-primary">{product.name}</h3>

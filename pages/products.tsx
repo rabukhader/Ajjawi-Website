@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useProducts } from '../src/hooks/useProducts';
 import { useBrands } from '../src/hooks/useBrands';
@@ -17,12 +18,15 @@ const ProductCard = memo(({ product, brandName, categoryName, t }: ProductCardPr
   return (
     <div className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-all duration-200 hover:-translate-y-1">
       <div className="relative h-64 overflow-hidden">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+        {product.image && (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            className="object-cover"
+            unoptimized
+          />
+        )}
       </div>
       <div className="p-6">
         <div className="flex items-center justify-between mb-2">
