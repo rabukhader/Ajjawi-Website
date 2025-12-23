@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback, memo } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useProducts } from '../src/hooks/useProducts';
@@ -65,6 +65,27 @@ export default function Products() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [gridColumns, setGridColumns] = useState(3); // Default to 3 columns
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Scroll to top functionality
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      setShowScrollTop(scrollY > 400); // Show button after 400px scroll
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   const brandMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -287,9 +308,116 @@ export default function Products() {
 
           {/* Products Grid */}
           <div className="flex-1">
+            {/* View Controls */}
+            <div className="flex items-center justify-between mb-6 bg-theme-card rounded-lg shadow-theme p-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-semibold text-theme-secondary">{t('products.view') || 'View'}:</span>
+                
+                {/* Grid Column Control */}
+                <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
+                  {[1, 2, 3, 4].map((cols) => (
+                    <button
+                      key={cols}
+                      onClick={() => {
+                        setGridColumns(cols);
+                        // Switch to grid view if currently in list mode
+                        if (viewMode === 'list') {
+                          setViewMode('grid');
+                        }
+                      }}
+                      className={`p-2 rounded transition-all ${
+                        gridColumns === cols
+                          ? 'bg-primary-600 text-white shadow-lg scale-110'
+                          : 'text-theme-secondary hover:text-primary-600 hover:bg-theme-tertiary'
+                      }`}
+                      aria-label={`${cols} columns`}
+                      title={`${cols} columns`}
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        {cols === 1 && (
+                          <path d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                        )}
+                        {cols === 2 && (
+                          <>
+                            <path d="M2 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                            <path d="M11 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1h-6a1 1 0 01-1-1V4z" />
+                          </>
+                        )}
+                        {cols === 3 && (
+                          <>
+                            <path d="M2 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                            <path d="M8 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1H9a1 1 0 01-1-1V4z" />
+                            <path d="M14 4a1 1 0 011-1h4a1 1 0 011 1v12a1 1 0 01-1 1h-4a1 1 0 01-1-1V4z" />
+                          </>
+                        )}
+                        {cols === 4 && (
+                          <>
+                            <path d="M2 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                            <path d="M7 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1H8a1 1 0 01-1-1V4z" />
+                            <path d="M12 4a1 1 0 011-1h3a1 1 0 011 1v12a1 1 0 01-1 1h-3a1 1 0 01-1-1V4z" />
+                            <path d="M17 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
+                          </>
+                        )}
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+
+                {/* View Mode Toggle */}
+                <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`p-2 rounded transition-all ${
+                      viewMode === 'grid'
+                        ? 'bg-primary-600 text-white'
+                        : 'text-theme-secondary hover:text-primary-600'
+                    }`}
+                    aria-label="Grid view"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded transition-all ${
+                      viewMode === 'list'
+                        ? 'bg-primary-600 text-white'
+                        : 'text-theme-secondary hover:text-primary-600'
+                    }`}
+                    aria-label="List view"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Results Count with Animation */}
+              <motion.div
+                key={filteredProducts.length}
+                initial={{ scale: 1.2, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="text-sm text-theme-secondary"
+              >
+                <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
+                {filteredProducts.length === 1 ? t('products.filters.product') || 'product' : t('products.filters.products') || 'products'}
+              </motion.div>
+            </div>
+
             {filteredProducts.length === 0 ? (
-              <div className="bg-theme-card rounded-lg shadow-theme p-12 text-center">
-                <p className="text-theme-secondary text-lg">{t('products.noResults')}</p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-theme-card rounded-lg shadow-theme p-12 text-center"
+              >
+                <div className="text-6xl mb-4">🔍</div>
+                <p className="text-theme-secondary text-lg mb-4">{t('products.noResults')}</p>
                 {productsData.length > 0 && (selectedBrands.length > 0 || selectedCategories.length > 0 || searchQuery.trim() !== '') && (
                   <button
                     onClick={() => {
@@ -297,28 +425,200 @@ export default function Products() {
                       setSelectedCategories([]);
                       setSearchQuery('');
                     }}
-                    className="mt-4 text-primary-600 hover:text-primary-700 font-semibold"
+                    className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                   >
                     {t('products.noResults.clear')}
                   </button>
                 )}
-              </div>
+              </motion.div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    brandName={brandMap.get(product.brandId) || ''}
-                    categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
-                    t={t}
-                  />
-                ))}
-              </div>
+              <motion.div
+                key={`${gridColumns}-${viewMode}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className={
+                  viewMode === 'grid'
+                    ? `grid gap-6 ${
+                        gridColumns === 1
+                          ? 'grid-cols-1'
+                          : gridColumns === 2
+                          ? 'grid-cols-1 md:grid-cols-2'
+                          : gridColumns === 3
+                          ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                          : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                      }`
+                    : 'space-y-4'
+                }
+              >
+                <AnimatePresence mode="popLayout">
+                  {filteredProducts.map((product, index) => (
+                    <motion.div
+                      key={product.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ delay: index * 0.03 }}
+                      className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : ''}
+                    >
+                      {viewMode === 'list' ? (
+                        <div className="flex gap-6">
+                          <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
+                            {product.image && (
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1 flex flex-col justify-between">
+                            <div>
+                              <h3 className="text-xl font-semibold text-theme-primary mb-2">{product.name}</h3>
+                              <p className="text-sm text-theme-secondary mb-2">
+                                {t('brand')}: {brandMap.get(product.brandId) || ''}
+                              </p>
+                              {product.categoryId !== undefined && categoryMap.get(product.categoryId) && (
+                                <p className="text-sm text-theme-secondary mb-2">
+                                  {t('products.category')}: {categoryMap.get(product.categoryId)}
+                                </p>
+                              )}
+                              {product.type && product.type.trim() !== '' && (
+                                <p className="text-sm text-theme-secondary mb-2">
+                                  {t('products.type')}: {product.type}
+                                </p>
+                              )}
+                            </div>
+                            {product.price && (
+                              <div className="mt-4">
+                                <span className="text-2xl font-bold text-primary-600">{product.price}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <ProductCard
+                          product={product}
+                          brandName={brandMap.get(product.brandId) || ''}
+                          categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
+                          t={t}
+                        />
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0, y: 20 }}
+            onClick={scrollToTop}
+            className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 bg-primary-600 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors group"
+            aria-label="Scroll to top"
+          >
+            <motion.svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              animate={{ y: [0, -4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 10l7-7m0 0l7 7m-7-7v18"
+              />
+            </motion.svg>
+            <span className="absolute -top-12 right-0 bg-gray-900 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+              {t('products.scrollTop') || 'Back to top'}
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Quick Filter Chips */}
+      {(selectedBrands.length > 0 || selectedCategories.length > 0 || searchQuery.trim() !== '') && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="fixed bottom-20 left-4 right-4 md:bottom-8 md:left-8 md:right-auto z-40 flex flex-wrap gap-2 max-w-md"
+        >
+          {searchQuery.trim() !== '' && (
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="bg-primary-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
+            >
+              <span>&ldquo;{searchQuery}&rdquo;</span>
+              <button
+                onClick={() => setSearchQuery('')}
+                className="hover:bg-primary-700 rounded-full p-1 transition-colors"
+                aria-label="Remove search"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </motion.div>
+          )}
+          {selectedBrands.map((brandId) => {
+            const brand = brandsData.find(b => b.id === brandId);
+            return brand ? (
+              <motion.div
+                key={brandId}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-accent-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
+              >
+                <span>{brand.name}</span>
+                <button
+                  onClick={() => handleBrandToggle(brandId)}
+                  className="hover:bg-accent-700 rounded-full p-1 transition-colors"
+                  aria-label={`Remove ${brand.name} filter`}
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </motion.div>
+            ) : null;
+          })}
+          {selectedCategories.map((categoryId) => {
+            const category = categories.find(c => c.id === categoryId);
+            return category ? (
+              <motion.div
+                key={categoryId}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="bg-accent-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
+              >
+                <span>{category.name}</span>
+                <button
+                  onClick={() => handleCategoryToggle(categoryId)}
+                  className="hover:bg-accent-700 rounded-full p-1 transition-colors"
+                  aria-label={`Remove ${category.name} filter`}
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </motion.div>
+            ) : null;
+          })}
+        </motion.div>
+      )}
     </div>
   );
 }
