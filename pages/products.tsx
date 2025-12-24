@@ -1,11 +1,34 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useProducts } from '../src/hooks/useProducts';
 import { useBrands } from '../src/hooks/useBrands';
 import { useCategories } from '../src/hooks/useCategories';
 import ProductCard from '../src/components/ProductCard';
+
+// Hook to detect screen size breakpoints
+const useScreenSize = () => {
+  const [screenSize, setScreenSize] = useState<'mobile' | 'md' | 'lg'>('mobile');
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        setScreenSize('lg');
+      } else if (width >= 768) {
+        setScreenSize('md');
+      } else {
+        setScreenSize('mobile');
+      }
+    };
+
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+    return () => window.removeEventListener('resize', updateScreenSize);
+  }, []);
+
+  return screenSize;
+};
 
 export default function Products() {
   const { t } = useLanguage();
@@ -15,11 +38,33 @@ export default function Products() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [gridColumns, setGridColumns] = useState(3); // Default to 3 columns
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 20;
+  const screenSize = useScreenSize();
+
+  // Get available column options based on screen size
+  const availableColumns = useMemo(() => {
+    if (screenSize === 'lg') {
+      return [1, 2, 3, 4]; // All columns available on large screens
+    } else if (screenSize === 'md') {
+      return [1, 2]; // Only 1-2 columns on medium screens
+    } else {
+      return [1]; // Only 1 column on mobile
+    }
+  }, [screenSize]);
+
+  // Set default grid columns based on screen size (highest available)
+  const [gridColumns, setGridColumns] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        return 4; // Default to 4 columns on large screens
+      } else if (width >= 768) {
+        return 2; // Default to 2 columns on medium screens
+      }
+    }
+    return 1; // Default to 1 column on mobile
+  });
 
   // Scroll to top functionality
   useEffect(() => {
@@ -101,21 +146,67 @@ export default function Products() {
     });
   }, [selectedBrands, selectedCategories, searchQuery, productsData]);
 
-  // Reset to page 1 when filters change
+  // Adjust gridColumns if current selection is not available, and set to highest on large screens
   useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedBrands, selectedCategories, searchQuery]);
+    if (screenSize === 'lg' && gridColumns < 4) {
+      setGridColumns(4);
+    } else if (screenSize === 'md' && gridColumns > 2) {
+      setGridColumns(2);
+    } else if (screenSize === 'mobile' && gridColumns > 1) {
+      setGridColumns(1);
+    } else if (!availableColumns.includes(gridColumns)) {
+      setGridColumns(availableColumns[availableColumns.length - 1]);
+    }
+  }, [availableColumns, gridColumns, screenSize]);
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const endIndex = startIndex + productsPerPage;
-  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
-  // Scroll to top when page changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentPage]);
+  // Force layout recalculation when filtered products change
+  // useLayoutEffect(() => {
+  //   if (typeof window === 'undefined') return;
+    
+  //   // Immediate recalculation
+  //   const forceReflow = () => {
+  //     console.log('forceReflow');
+  //     // Force multiple reflows
+  //     void document.body.offsetHeight;
+  //     void document.documentElement.offsetHeight;
+  //     void document.documentElement.scrollHeight;
+  //     void document.documentElement.clientHeight;
+      
+  //     // Force layout recalculation on the main container
+  //     const mainElement = document.querySelector('main');
+  //     if (mainElement) {
+  //       void mainElement.offsetHeight;
+  //       void mainElement.scrollHeight;
+  //     }
+      
+  //     // Trigger events to help browsers recalculate
+  //     window.dispatchEvent(new Event('resize'));
+  //     window.dispatchEvent(new Event('scroll'));
+  //   };
+    
+  //   // Immediate execution
+  //   forceReflow();
+    
+  //   // Also run after a short delay to catch any delayed updates
+  //   const timer1 = requestAnimationFrame(() => {
+  //     forceReflow();
+  //     const timer2 = requestAnimationFrame(() => {
+  //       forceReflow();
+        
+  //       // Adjust scroll position if needed
+  //       const scrollHeight = document.documentElement.scrollHeight;
+  //       if (window.scrollY + window.innerHeight > scrollHeight + 10) {
+  //         window.scrollTo({ 
+  //           top: Math.max(0, scrollHeight - window.innerHeight), 
+  //           behavior: 'instant' 
+  //         });
+  //       }
+  //     });
+  //     return () => cancelAnimationFrame(timer2);
+  //   });
+    
+  //   return () => cancelAnimationFrame(timer1);
+  // }, [filteredProducts.length]);
 
   const handleBrandToggle = useCallback((brandId: string) => {
     setSelectedBrands((prev) => {
@@ -124,7 +215,6 @@ export default function Products() {
       }
       return [...prev, brandId];
     });
-    setCurrentPage(1); // Reset to first page
   }, []);
 
   const handleCategoryToggle = useCallback((categoryId: number) => {
@@ -134,12 +224,10 @@ export default function Products() {
       }
       return [...prev, categoryId];
     });
-    setCurrentPage(1); // Reset to first page
   }, []);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value);
-    setCurrentPage(1); // Reset to first page
   }, []);
 
   if (productsLoading || brandsLoading || categoriesLoading) {
@@ -167,28 +255,18 @@ export default function Products() {
   }
 
   return (
-    <div className="min-h-screen py-20 bg-theme-secondary">
+    <div className="py-20 bg-theme-secondary">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 text-theme-primary">{t('products.title')}</h1>
           <p className="text-lg text-theme-secondary">
             {t('products.subtitle')}
           </p>
-        </motion.div>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          <motion.aside
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            className="lg:w-80 flex-shrink-0"
-          >
+          <aside className="lg:w-80 flex-shrink-0">
             <div className="bg-theme-card rounded-lg shadow-theme p-6 sticky top-24">
               <h2 className="text-2xl font-bold mb-6 text-theme-primary">{t('products.filters.title')}</h2>
 
@@ -233,7 +311,6 @@ export default function Products() {
                     <button
                       onClick={() => {
                         setSelectedCategories([]);
-                        setCurrentPage(1);
                       }}
                       className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                     >
@@ -268,7 +345,6 @@ export default function Products() {
                   <button
                     onClick={() => {
                       setSelectedBrands([]);
-                      setCurrentPage(1);
                     }}
                     className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                   >
@@ -283,14 +359,9 @@ export default function Products() {
                   {t('products.filters.results')} <span className="font-semibold">{filteredProducts.length}</span> {t('products.filters.of')}{' '}
                   <span className="font-semibold">{productsData.length}</span> {t('products.filters.products')}
                 </p>
-                {totalPages > 1 && (
-                  <p className="text-sm text-theme-secondary mt-2">
-                    {t('products.pagination.page') || 'Page'} <span className="font-semibold">{currentPage}</span> {t('products.pagination.of') || 'of'} <span className="font-semibold">{totalPages}</span>
-                  </p>
-                )}
               </div>
             </div>
-          </motion.aside>
+          </aside>
 
           {/* Products Grid */}
           <div className="flex-1">
@@ -299,59 +370,61 @@ export default function Products() {
               <div className="flex items-center gap-4">
                 <span className="text-sm font-semibold text-theme-secondary">{t('products.view') || 'View'}:</span>
                 
-                {/* Grid Column Control */}
-                <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
-                  {[1, 2, 3, 4].map((cols) => (
-                    <button
-                      key={cols}
-                      onClick={() => {
-                        setGridColumns(cols);
-                        // Switch to grid view if currently in list mode
-                        if (viewMode === 'list') {
-                          setViewMode('grid');
-                        }
-                      }}
-                      className={`p-2 rounded transition-all ${
-                        gridColumns === cols
-                          ? 'bg-primary-600 text-white shadow-lg scale-110'
-                          : 'text-theme-secondary hover:text-primary-600 hover:bg-theme-tertiary'
-                      }`}
-                      aria-label={`${cols} columns`}
-                      title={`${cols} columns`}
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
+                {/* Grid Column Control - Only show when multiple options are available */}
+                {availableColumns.length > 1 && (
+                  <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
+                    {availableColumns.map((cols) => (
+                      <button
+                        key={cols}
+                        onClick={() => {
+                          setGridColumns(cols);
+                          // Switch to grid view if currently in list mode
+                          if (viewMode === 'list') {
+                            setViewMode('grid');
+                          }
+                        }}
+                        className={`p-2 rounded transition-all ${
+                          gridColumns === cols
+                            ? 'bg-primary-600 text-white shadow-lg scale-110'
+                            : 'text-theme-secondary hover:text-primary-600 hover:bg-theme-tertiary'
+                        }`}
+                        aria-label={`${cols} columns`}
+                        title={`${cols} columns`}
                       >
-                        {cols === 1 && (
-                          <path d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
-                        )}
-                        {cols === 2 && (
-                          <>
-                            <path d="M2 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
-                            <path d="M11 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1h-6a1 1 0 01-1-1V4z" />
-                          </>
-                        )}
-                        {cols === 3 && (
-                          <>
-                            <rect x="1" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
-                            <rect x="6.5" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
-                            <rect x="12" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
-                          </>
-                        )}
-                        {cols === 4 && (
-                          <>
-                            <rect x="0.5" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
-                            <rect x="4.75" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
-                            <rect x="9" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
-                            <rect x="13.25" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
-                          </>
-                        )}
-                      </svg>
-                    </button>
-                  ))}
-                </div>
+                        <svg
+                          className="w-5 h-5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          {cols === 1 && (
+                            <path d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                          )}
+                          {cols === 2 && (
+                            <>
+                              <path d="M2 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" />
+                              <path d="M11 4a1 1 0 011-1h6a1 1 0 011 1v12a1 1 0 01-1 1h-6a1 1 0 01-1-1V4z" />
+                            </>
+                          )}
+                          {cols === 3 && (
+                            <>
+                              <rect x="1" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
+                              <rect x="6.5" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
+                              <rect x="12" y="3" width="4.5" height="14" rx="0.5" fill="currentColor" />
+                            </>
+                          )}
+                          {cols === 4 && (
+                            <>
+                              <rect x="0.5" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                              <rect x="4.75" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                              <rect x="9" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                              <rect x="13.25" y="3" width="3.5" height="14" rx="0.5" fill="currentColor" />
+                            </>
+                          )}
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* View Mode Toggle */}
                 <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
@@ -384,27 +457,15 @@ export default function Products() {
                 </div>
               </div>
 
-              {/* Results Count with Animation */}
-              <motion.div
-                key={filteredProducts.length}
-                initial={{ scale: 1.2, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-sm text-theme-secondary"
-              >
-                <span className="font-semibold text-primary-600">
-                  {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)}
-                </span>{' '}
-                {t('products.pagination.of') || 'of'} <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
+              {/* Results Count */}
+              <div className="text-sm text-theme-secondary">
+                <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
                 {filteredProducts.length === 1 ? t('products.filters.product') || 'product' : t('products.filters.products') || 'products'}
-              </motion.div>
+              </div>
             </div>
 
-            {paginatedProducts.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-theme-card rounded-lg shadow-theme p-12 text-center"
-              >
+            {filteredProducts.length === 0 ? (
+              <div className="bg-theme-card rounded-lg shadow-theme p-12 text-center">
                 <div className="text-6xl mb-4">🔍</div>
                 <p className="text-theme-secondary text-lg mb-4">{t('products.noResults')}</p>
                 {productsData.length > 0 && (selectedBrands.length > 0 || selectedCategories.length > 0 || searchQuery.trim() !== '') && (
@@ -413,20 +474,15 @@ export default function Products() {
                       setSelectedBrands([]);
                       setSelectedCategories([]);
                       setSearchQuery('');
-                      setCurrentPage(1);
                     }}
                     className="mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                   >
                     {t('products.noResults.clear')}
                   </button>
                 )}
-              </motion.div>
+              </div>
             ) : (
-              <motion.div
-                key={`${gridColumns}-${viewMode}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+              <div
                 className={
                   viewMode === 'grid'
                     ? `grid gap-6 ${
@@ -441,16 +497,11 @@ export default function Products() {
                     : 'space-y-4'
                 }
               >
-                <AnimatePresence mode="popLayout">
-                  {paginatedProducts.map((product, index) => (
-                    <motion.div
-                      key={product.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ delay: index * 0.03 }}
-                      className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : ''}
-                    >
+                {filteredProducts.map((product) => (
+                  <div
+                    key={product.id}
+                    className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : ''}
+                  >
                       {viewMode === 'list' ? (
                         <div className="flex gap-6">
                           <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
@@ -496,143 +547,49 @@ export default function Products() {
                           t={t}
                         />
                       )}
-                    </motion.div>
+                    </div>
                   ))}
-                </AnimatePresence>
-              </motion.div>
-            )}
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-12 flex items-center justify-center gap-2"
-              >
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                  className={`p-2 rounded-lg transition-all ${
-                    currentPage === 1
-                      ? 'bg-theme-secondary text-theme-tertiary cursor-not-allowed'
-                      : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
-                  }`}
-                  aria-label="Previous page"
-                >
-                  <svg className="w-5 h-5 rtl:scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-
-                {/* Page Numbers */}
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                    // Show first page, last page, current page, and pages around current
-                    const showPage = 
-                      page === 1 ||
-                      page === totalPages ||
-                      (page >= currentPage - 1 && page <= currentPage + 1);
-
-                    if (!showPage) {
-                      // Show ellipsis
-                      if (page === currentPage - 2 || page === currentPage + 2) {
-                        return (
-                          <span key={page} className="px-2 text-theme-secondary">
-                            ...
-                          </span>
-                        );
-                      }
-                      return null;
-                    }
-
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-all ${
-                          currentPage === page
-                            ? 'bg-primary-600 text-white shadow-lg scale-110'
-                            : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
-                        }`}
-                        aria-label={`Page ${page}`}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                  className={`p-2 rounded-lg transition-all ${
-                    currentPage === totalPages
-                      ? 'bg-theme-secondary text-theme-tertiary cursor-not-allowed'
-                      : 'bg-theme-card text-theme-primary hover:bg-primary-600 hover:text-white shadow-theme'
-                  }`}
-                  aria-label="Next page"
-                >
-                  <svg className="w-5 h-5 rtl:scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </motion.div>
+              </div>
             )}
           </div>
         </div>
       </div>
 
       {/* Scroll to Top Button */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0, y: 20 }}
-            onClick={scrollToTop}
-            className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 bg-primary-600 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors group"
-            aria-label="Scroll to top"
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 bg-primary-600 text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-primary-700 transition-colors group"
+          aria-label="Scroll to top"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <motion.svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 10l7-7m0 0l7 7m-7-7v18"
-              />
-            </motion.svg>
-            <span className="absolute -top-12 right-0 rtl:right-auto rtl:left-0 bg-gray-900 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              {t('products.scrollTop') || 'Back to top'}
-            </span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+          <span className="absolute -top-12 right-0 rtl:right-auto rtl:left-0 bg-gray-900 text-white text-xs px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            {t('products.scrollTop') || 'Back to top'}
+          </span>
+        </button>
+      )}
 
       {/* Quick Filter Chips */}
       {(selectedBrands.length > 0 || selectedCategories.length > 0 || searchQuery.trim() !== '') && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-20 left-4 right-4 md:bottom-8 md:left-8 md:right-auto z-40 flex flex-wrap gap-2 max-w-md"
-        >
+        <div className="fixed bottom-20 left-4 right-4 md:bottom-8 md:left-8 md:right-auto z-40 flex flex-wrap gap-2 max-w-md">
           {searchQuery.trim() !== '' && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="bg-primary-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
-            >
+            <div className="bg-primary-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg">
               <span>&ldquo;{searchQuery}&rdquo;</span>
               <button
                 onClick={() => {
                   setSearchQuery('');
-                  setCurrentPage(1);
                 }}
                 className="hover:bg-primary-700 rounded-full p-1 transition-colors"
                 aria-label="Remove search"
@@ -641,15 +598,13 @@ export default function Products() {
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
-            </motion.div>
+            </div>
           )}
           {selectedBrands.map((brandId) => {
             const brand = brandsData.find(b => b.id === brandId);
             return brand ? (
-              <motion.div
+              <div
                 key={brandId}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
                 className="bg-accent-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
               >
                 <span>{brand.name}</span>
@@ -662,16 +617,14 @@ export default function Products() {
                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </button>
-              </motion.div>
+              </div>
             ) : null;
           })}
           {selectedCategories.map((categoryId) => {
             const category = categories.find(c => c.id === categoryId);
             return category ? (
-              <motion.div
+              <div
                 key={categoryId}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
                 className="bg-accent-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
               >
                 <span>{category.name}</span>
@@ -684,10 +637,10 @@ export default function Products() {
                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </button>
-              </motion.div>
+              </div>
             ) : null;
           })}
-        </motion.div>
+        </div>
       )}
     </div>
   );

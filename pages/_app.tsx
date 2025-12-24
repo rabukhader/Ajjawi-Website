@@ -9,9 +9,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <div className="flex flex-col min-h-screen bg-theme-primary">
+        <div className="flex flex-col bg-theme-primary" style={{ minHeight: 0, height: 'auto' }}>
           <Navbar />
-          <main className="flex-grow">
+          <main style={{ flex: '0 0 auto', minHeight: 0, height: 'auto' }}>
             <Component {...pageProps} />
           </main>
           <Footer />

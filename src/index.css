@@ -7,10 +7,23 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    height: auto;
+    min-height: 0;
+  }
+  
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
+    height: auto;
+    min-height: 0;
+    overflow-x: hidden;
+  }
+  
+  #__next {
+    height: auto;
+    min-height: 0;
   }
 }
 
