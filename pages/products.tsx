@@ -53,18 +53,8 @@ export default function Products() {
     }
   }, [screenSize]);
 
-  // Set default grid columns based on screen size (highest available)
-  const [gridColumns, setGridColumns] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const width = window.innerWidth;
-      if (width >= 1024) {
-        return 4; // Default to 4 columns on large screens
-      } else if (width >= 768) {
-        return 2; // Default to 2 columns on medium screens
-      }
-    }
-    return 1; // Default to 1 column on mobile
-  });
+  // Set default grid columns - always start with 4 columns
+  const [gridColumns, setGridColumns] = useState(4);
 
   // Scroll to top functionality
   useEffect(() => {
@@ -108,7 +98,8 @@ export default function Products() {
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [categoriesData]);
 
-  const filteredProducts = useMemo(() => {
+  // Separate new products and regular products, filter out hidden products
+  const { newProducts, regularProducts } = useMemo(() => {
     const trimmedQuery = searchQuery.trim().toLowerCase();
     const hasSearchQuery = trimmedQuery !== '';
     const hasBrandFilter = selectedBrands.length > 0;
@@ -116,7 +107,10 @@ export default function Products() {
     const selectedBrandsSet = hasBrandFilter ? new Set(selectedBrands) : null;
     const selectedCategoriesSet = hasCategoryFilter ? new Set(selectedCategories) : null;
 
-    const filtered = productsData.filter((product) => {
+    const filterProduct = (product: typeof productsData[0]) => {
+      // Filter out hidden products
+      if (product.isHidden === true) return false;
+
       // Brand filter
       const matchesBrand = !hasBrandFilter || (selectedBrandsSet?.has(product.brandId) ?? false);
       if (!matchesBrand) return false;
@@ -133,81 +127,36 @@ export default function Products() {
       const productDescription = (product.description || '').toLowerCase();
       
       return productName.includes(trimmedQuery) || productDescription.includes(trimmedQuery);
-    });
+    };
 
-    // Sort by productOrder if available, then by name
-    return filtered.sort((a, b) => {
-      if (a.productOrder !== undefined && b.productOrder !== undefined) {
-        return a.productOrder - b.productOrder;
-      }
-      if (a.productOrder !== undefined) return -1;
-      if (b.productOrder !== undefined) return 1;
-      return a.name.localeCompare(b.name);
-    });
+    const sortProducts = (products: typeof productsData) => {
+      return products.sort((a, b) => {
+        if (a.productOrder !== undefined && b.productOrder !== undefined) {
+          return a.productOrder - b.productOrder;
+        }
+        if (a.productOrder !== undefined) return -1;
+        if (b.productOrder !== undefined) return 1;
+        return a.name.localeCompare(b.name);
+      });
+    };
+
+    const filtered = productsData.filter(filterProduct);
+    const newProductsList = filtered.filter(p => p.isNew === true);
+    const regularProductsList = filtered.filter(p => p.isNew !== true);
+
+    return {
+      newProducts: sortProducts(newProductsList),
+      regularProducts: sortProducts(regularProductsList),
+    };
   }, [selectedBrands, selectedCategories, searchQuery, productsData]);
 
-  // Adjust gridColumns if current selection is not available, and set to highest on large screens
-  useEffect(() => {
-    if (screenSize === 'lg' && gridColumns < 4) {
-      setGridColumns(4);
-    } else if (screenSize === 'md' && gridColumns > 2) {
-      setGridColumns(2);
-    } else if (screenSize === 'mobile' && gridColumns > 1) {
-      setGridColumns(1);
-    } else if (!availableColumns.includes(gridColumns)) {
-      setGridColumns(availableColumns[availableColumns.length - 1]);
-    }
-  }, [availableColumns, gridColumns, screenSize]);
+  // Combined filtered products for count display (excluding new products from regular count)
+  const filteredProducts = useMemo(() => {
+    return [...regularProducts];
+  }, [regularProducts]);
 
-  // Force layout recalculation when filtered products change
-  // useLayoutEffect(() => {
-  //   if (typeof window === 'undefined') return;
-    
-  //   // Immediate recalculation
-  //   const forceReflow = () => {
-  //     console.log('forceReflow');
-  //     // Force multiple reflows
-  //     void document.body.offsetHeight;
-  //     void document.documentElement.offsetHeight;
-  //     void document.documentElement.scrollHeight;
-  //     void document.documentElement.clientHeight;
-      
-  //     // Force layout recalculation on the main container
-  //     const mainElement = document.querySelector('main');
-  //     if (mainElement) {
-  //       void mainElement.offsetHeight;
-  //       void mainElement.scrollHeight;
-  //     }
-      
-  //     // Trigger events to help browsers recalculate
-  //     window.dispatchEvent(new Event('resize'));
-  //     window.dispatchEvent(new Event('scroll'));
-  //   };
-    
-  //   // Immediate execution
-  //   forceReflow();
-    
-  //   // Also run after a short delay to catch any delayed updates
-  //   const timer1 = requestAnimationFrame(() => {
-  //     forceReflow();
-  //     const timer2 = requestAnimationFrame(() => {
-  //       forceReflow();
-        
-  //       // Adjust scroll position if needed
-  //       const scrollHeight = document.documentElement.scrollHeight;
-  //       if (window.scrollY + window.innerHeight > scrollHeight + 10) {
-  //         window.scrollTo({ 
-  //           top: Math.max(0, scrollHeight - window.innerHeight), 
-  //           behavior: 'instant' 
-  //         });
-  //       }
-  //     });
-  //     return () => cancelAnimationFrame(timer2);
-  //   });
-    
-  //   return () => cancelAnimationFrame(timer1);
-  // }, [filteredProducts.length]);
 
+  
   const handleBrandToggle = useCallback((brandId: string) => {
     setSelectedBrands((prev) => {
       if (prev.includes(brandId)) {
@@ -356,8 +305,8 @@ export default function Products() {
               {/* Results Count */}
               <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--border-primary)' }}>
                 <p className="text-sm text-theme-secondary">
-                  {t('products.filters.results')} <span className="font-semibold">{filteredProducts.length}</span> {t('products.filters.of')}{' '}
-                  <span className="font-semibold">{productsData.length}</span> {t('products.filters.products')}
+                  {t('products.filters.results')} <span className="font-semibold">{filteredProducts.length + newProducts.length}</span> {t('products.filters.of')}{' '}
+                  <span className="font-semibold">{productsData.filter(p => p.isHidden !== true).length}</span> {t('products.filters.products')}
                 </p>
               </div>
             </div>
@@ -459,12 +408,110 @@ export default function Products() {
 
               {/* Results Count */}
               <div className="text-sm text-theme-secondary">
-                <span className="font-semibold text-primary-600">{filteredProducts.length}</span>{' '}
-                {filteredProducts.length === 1 ? t('products.filters.product') || 'product' : t('products.filters.products') || 'products'}
+                <span className="font-semibold text-primary-600">{filteredProducts.length + newProducts.length}</span>{' '}
+                {(filteredProducts.length + newProducts.length) === 1 ? t('products.filters.product') || 'product' : t('products.filters.products') || 'products'}
               </div>
             </div>
 
-            {filteredProducts.length === 0 ? (
+            {/* New Products Section */}
+            {newProducts.length > 0 && (
+              <div className="mb-12">
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-primary-500 to-accent-600 md:p-4 shadow-xl mb-4">
+                  <div className="relative z-10">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-2xl md:text-3xl animate-bounce">✨</span>
+                        <h2 className="text-2xl md:text-4xl font-extrabold text-white drop-shadow-lg">
+                          {t('products.newProducts.title') || 'New Products!'}
+                        </h2>
+                        <span className="text-2xl md:text-3xl animate-bounce">✨</span>
+                      </div>
+                  </div>
+                  {/* Decorative elements */}
+                  <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-16 -translate-y-16"></div>
+                  <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full translate-x-20 translate-y-20"></div>
+                </div>
+
+                <div
+                  className={
+                    viewMode === 'grid'
+                      ? `grid gap-6 ${
+                          gridColumns === 1
+                            ? 'grid-cols-1'
+                            : gridColumns === 2
+                            ? 'grid-cols-1 md:grid-cols-2'
+                            : gridColumns === 3
+                            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                            : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                        }`
+                      : 'space-y-4'
+                  }
+                >
+                  {newProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : 'h-full'}
+                    >
+                      {viewMode === 'list' ? (
+                        <div className="flex gap-6">
+                          <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
+                            {product.image && (
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            )}
+                          </div>
+                          <div className="flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <h3 className="text-xl font-semibold text-theme-primary">{product.name}</h3>
+                                <span className="bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">NEW</span>
+                              </div>
+                              <p className="text-sm text-theme-secondary mb-2">
+                                {t('brand')}: {brandMap.get(product.brandId) || ''}
+                              </p>
+                              {product.categoryId !== undefined && categoryMap.get(product.categoryId) && (
+                                <p className="text-sm text-theme-secondary mb-2">
+                                  {t('products.category')}: {categoryMap.get(product.categoryId)}
+                                </p>
+                              )}
+                              {product.type && product.type.trim() !== '' && (
+                                <p className="text-sm text-theme-secondary mb-2">
+                                  {t('products.type')}: {product.type}
+                                </p>
+                              )}
+                            </div>
+                            {product.price && (
+                              <div className="mt-4">
+                                <span className="text-2xl font-bold text-primary-600">{product.price}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative h-full">
+                          <ProductCard
+                            product={product}
+                            brandName={brandMap.get(product.brandId) || ''}
+                            categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
+                            t={t}
+                          />
+                          <div className="absolute top-4 right-4 z-10 bg-gradient-to-r from-primary-600 to-accent-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg animate-pulse">
+                            NEW
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Regular Products Section */}
+            {filteredProducts.length === 0 && newProducts.length === 0 ? (
               <div className="bg-theme-card rounded-lg shadow-theme p-12 text-center">
                 <div className="text-6xl mb-4">🔍</div>
                 <p className="text-theme-secondary text-lg mb-4">{t('products.noResults')}</p>
@@ -481,27 +528,33 @@ export default function Products() {
                   </button>
                 )}
               </div>
-            ) : (
-              <div
-                className={
-                  viewMode === 'grid'
-                    ? `grid gap-6 ${
-                        gridColumns === 1
-                          ? 'grid-cols-1'
-                          : gridColumns === 2
-                          ? 'grid-cols-1 md:grid-cols-2'
-                          : gridColumns === 3
-                          ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-                          : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-                      }`
-                    : 'space-y-4'
-                }
-              >
-                {filteredProducts.map((product) => (
-                  <div
-                    key={product.id}
-                    className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : ''}
-                  >
+            ) : filteredProducts.length > 0 ? (
+              <div>
+                {newProducts.length > 0 && (
+                  <div className="mb-8">
+                    <h2 className="text-3xl font-bold text-theme-primary mb-4">{t('products.allProducts') || 'All Products'}</h2>
+                  </div>
+                )}
+                <div
+                  className={
+                    viewMode === 'grid'
+                      ? `grid gap-6 ${
+                          gridColumns === 1
+                            ? 'grid-cols-1'
+                            : gridColumns === 2
+                            ? 'grid-cols-1 md:grid-cols-2'
+                            : gridColumns === 3
+                            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                            : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                        }`
+                      : 'space-y-4'
+                  }
+                >
+                  {filteredProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className={viewMode === 'list' ? 'bg-theme-card rounded-lg shadow-theme p-6' : 'h-full'}
+                    >
                       {viewMode === 'list' ? (
                         <div className="flex gap-6">
                           <div className="relative w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden">
@@ -549,8 +602,9 @@ export default function Products() {
                       )}
                     </div>
                   ))}
+                </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

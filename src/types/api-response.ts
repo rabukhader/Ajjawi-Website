@@ -11,6 +11,8 @@ export interface ApiProduct {
   categoryId: number;
   categoryName: string;
   productOrder: number;
+  isNew?: boolean;
+  isHidden?: boolean;
 }
 
 export interface ApiBrand {

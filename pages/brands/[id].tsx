@@ -22,8 +22,10 @@ export default function BrandDetail() {
   const { products: allProducts, loading: productsLoading } = useProducts();
   const { categories: categoriesData } = useCategories();
   
-  // Filter products by brandId
-  const brandProducts = allProducts.filter((product) => product.brandId === id);
+  // Filter products by brandId and exclude hidden products
+  const brandProducts = allProducts.filter((product) => 
+    product.brandId === id && product.isHidden !== true
+  );
 
   // Create a map of categoryId to category name
   const categoryMap = useMemo(() => {

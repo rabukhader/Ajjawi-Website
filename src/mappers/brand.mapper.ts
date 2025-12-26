@@ -38,6 +38,8 @@ export function mapApiProductToProduct(apiProduct: ApiProduct, brandId: string):
     categoryId: apiProduct.categoryId,
     categoryName: apiProduct.categoryName,
     productOrder: apiProduct.productOrder,
+    isNew: apiProduct.isNew,
+    isHidden: apiProduct.isHidden,
     // Note: image, price not provided by API, will be undefined
   };
 }

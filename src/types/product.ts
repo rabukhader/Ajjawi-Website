@@ -37,6 +37,8 @@ export interface Product {
   categoryId?: number; // Category ID from backend
   categoryName?: string; // Category name from backend
   productOrder?: number; // Product order for sorting
+  isNew?: boolean; // Indicates if product is new
+  isHidden?: boolean; // Indicates if product should be hidden
 }
 
 export interface Brand {
