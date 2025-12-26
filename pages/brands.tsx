@@ -5,9 +5,10 @@ import { useLanguage } from '../src/contexts/LanguageContext';
 import { useBrands } from '../src/hooks/useBrands';
 import { useProducts } from '../src/hooks/useProducts';
 import { useMemo } from 'react';
+import { getBrandName } from '../src/utils/brand.utils';
 
 export default function Brands() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { brands, loading: brandsLoading, error: brandsError } = useBrands();
   const { products, loading: productsLoading } = useProducts();
 
@@ -94,18 +95,18 @@ export default function Brands() {
             >
               <Link href={brand.id ? `/brands/${brand.id}` : '#'}>
                 <div className="p-8">
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start mb-6">
                     <div className="w-24 h-24 rounded-full overflow-hidden mr-6 rtl:mr-0 rtl:ml-6 flex-shrink-0 relative">
                       <Image
                         src={brand.logo}
-                        alt={brand.name}
+                        alt={getBrandName(brand, language)}
                         fill
                         className="object-cover"
                         unoptimized
                       />
                     </div>
-                    <div>
-                      <h2 className="text-3xl font-bold text-theme-primary">{brand.name}</h2>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-3xl font-bold text-theme-primary break-words">{getBrandName(brand, language)}</h2>
                       {productCounts.has(brand.id) && (
                         <p className="text-sm text-theme-secondary mt-1">
                           {productCounts.get(brand.id)} {productCounts.get(brand.id) === 1 ? t('brands.product') : t('brands.products')}
@@ -113,7 +114,7 @@ export default function Brands() {
                       )}
                     </div>
                   </div>
-                  <p className="text-theme-secondary mb-6 leading-relaxed">{brand.description}</p>
+                  <p className="text-theme-secondary mb-6 leading-relaxed break-words">{brand.description}</p>
                   <div className="flex items-center text-primary-600 font-semibold group">
                     <span>{t('home.brands.view')}</span>
                   </div>

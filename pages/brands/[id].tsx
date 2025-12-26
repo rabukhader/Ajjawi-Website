@@ -9,11 +9,12 @@ import { brandRepository } from '../../src/repositories/brand.repository';
 import { useProducts } from '../../src/hooks/useProducts';
 import { useCategories } from '../../src/hooks/useCategories';
 import ProductCard from '../../src/components/ProductCard';
+import { getBrandName } from '../../src/utils/brand.utils';
 
 export default function BrandDetail() {
   const router = useRouter();
   const { id } = router.query;
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [brand, setBrand] = useState<Brand | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -113,10 +114,10 @@ export default function BrandDetail() {
 
           <div className="flex flex-col md:flex-row items-center md:items-start">
             <div className="w-32 h-32 rounded-full overflow-hidden mb-6 md:mb-0 md:mr-8 rtl:md:mr-0 rtl:md:ml-8 flex-shrink-0 relative">
-              <Image src={brand.logo} alt={brand.name} fill className="object-cover" unoptimized />
+              <Image src={brand.logo} alt={getBrandName(brand, language)} fill className="object-cover" unoptimized />
             </div>
             <div>
-              <h1 className="text-4xl font-bold mb-4 text-theme-primary">{brand.name}</h1>
+              <h1 className="text-4xl font-bold mb-4 text-theme-primary">{getBrandName(brand, language)}</h1>
               <p className="text-lg text-theme-secondary leading-relaxed">{brand.description}</p>
             </div>
           </div>
@@ -147,7 +148,7 @@ export default function BrandDetail() {
                 >
                   <ProductCard
                     product={product}
-                    brandName={brand.name}
+                    brandName={getBrandName(brand, language)}
                     categoryName={product.categoryId !== undefined ? categoryMap.get(product.categoryId) : undefined}
                     t={t}
                     showBrand={false}

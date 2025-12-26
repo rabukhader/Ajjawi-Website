@@ -18,6 +18,7 @@ export interface ApiProduct {
 export interface ApiBrand {
   id: number;
   name: string;
+  nameEnglish?: string;
   imageUrl: string;
   // Products are no longer returned in the brands API response
   // They must be fetched separately from the products API

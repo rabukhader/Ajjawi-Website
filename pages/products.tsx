@@ -5,6 +5,7 @@ import { useProducts } from '../src/hooks/useProducts';
 import { useBrands } from '../src/hooks/useBrands';
 import { useCategories } from '../src/hooks/useCategories';
 import ProductCard from '../src/components/ProductCard';
+import { getBrandName } from '../src/utils/brand.utils';
 
 // Hook to detect screen size breakpoints
 const useScreenSize = () => {
@@ -31,7 +32,7 @@ const useScreenSize = () => {
 };
 
 export default function Products() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { products: productsData, loading: productsLoading, error: productsError } = useProducts();
   const { brands: brandsData, loading: brandsLoading, error: brandsError } = useBrands();
   const { categories: categoriesData, loading: categoriesLoading, error: categoriesError } = useCategories();
@@ -77,10 +78,10 @@ export default function Products() {
   const brandMap = useMemo(() => {
     const map = new Map<string, string>();
     brandsData.forEach((brand) => {
-      map.set(brand.id, brand.name);
+      map.set(brand.id, getBrandName(brand, language));
     });
     return map;
-  }, [brandsData]);
+  }, [brandsData, language]);
 
   // Create a map of categoryId to category name from the categories API
   const categoryMap = useMemo(() => {
@@ -286,7 +287,7 @@ export default function Products() {
                         onChange={() => handleBrandToggle(brand.id)}
                         className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500 focus:ring-2"
                       />
-                      <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{brand.name}</span>
+                      <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{getBrandName(brand, language)}</span>
                     </label>
                   ))}
                 </div>
@@ -661,11 +662,11 @@ export default function Products() {
                 key={brandId}
                 className="bg-accent-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg"
               >
-                <span>{brand.name}</span>
+                <span>{getBrandName(brand, language)}</span>
                 <button
                   onClick={() => handleBrandToggle(brandId)}
                   className="hover:bg-accent-700 rounded-full p-1 transition-colors"
-                  aria-label={`Remove ${brand.name} filter`}
+                  aria-label={`Remove ${getBrandName(brand, language)} filter`}
                 >
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />

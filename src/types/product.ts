@@ -43,8 +43,8 @@ export interface Product {
 
 export interface Brand {
   id: string;
-  name: string;
-  nameAr?: string; // Arabic name if different
+  name: string; // Arabic name
+  nameEnglish?: string; // English name
   logo: string;
   description: string;
   descriptionAr?: string; // Arabic description

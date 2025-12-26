@@ -51,6 +51,7 @@ export function mapApiBrandToBrand(apiBrand: ApiBrand): Brand {
   return {
     id: brandId,
     name: apiBrand.name,
+    nameEnglish: apiBrand.nameEnglish,
     logo: apiBrand.imageUrl, // Map imageUrl from API to logo
     description: '', // Not provided by API
     products: [], // Products are fetched separately from the products API
