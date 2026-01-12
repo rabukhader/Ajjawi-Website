@@ -13,6 +13,7 @@ export interface ApiProduct {
   productOrder: number;
   isNew?: boolean;
   isHidden?: boolean;
+  imageUrl?: string;
 }
 
 export interface ApiBrand {

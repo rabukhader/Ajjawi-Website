@@ -40,7 +40,8 @@ export function mapApiProductToProduct(apiProduct: ApiProduct, brandId: string):
     productOrder: apiProduct.productOrder,
     isNew: apiProduct.isNew,
     isHidden: apiProduct.isHidden,
-    // Note: image, price not provided by API, will be undefined
+    image: apiProduct.imageUrl, // Map imageUrl from API to image
+    // Note: price not provided by API, will be undefined
   };
 }
 

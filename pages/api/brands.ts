@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://3.239.1.159:8089';
+const API_BASE_URL = 'https://ajjawe.ps';
 
 export default async function handler(
   req: NextApiRequest,
