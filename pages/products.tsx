@@ -43,6 +43,13 @@ export default function Products() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const screenSize = useScreenSize();
 
+  // Force list view on mobile
+  useEffect(() => {
+    if (screenSize === 'mobile') {
+      setViewMode('list');
+    }
+  }, [screenSize]);
+
   // Get available column options based on screen size
   const availableColumns = useMemo(() => {
     if (screenSize === 'lg') {
@@ -320,8 +327,8 @@ export default function Products() {
               <div className="flex items-center gap-4">
                 <span className="text-sm font-semibold text-theme-secondary">{t('products.view') || 'View'}:</span>
                 
-                {/* Grid Column Control - Only show when multiple options are available */}
-                {availableColumns.length > 1 && (
+                {/* Grid Column Control - Hide on mobile, only show when multiple options are available */}
+                {screenSize !== 'mobile' && availableColumns.length > 1 && (
                   <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
                     {availableColumns.map((cols) => (
                       <button
@@ -376,35 +383,41 @@ export default function Products() {
                   </div>
                 )}
 
-                {/* View Mode Toggle */}
-                <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded transition-all ${
-                      viewMode === 'grid'
-                        ? 'bg-primary-600 text-white'
-                        : 'text-theme-secondary hover:text-primary-600'
-                    }`}
-                    aria-label="Grid view"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded transition-all ${
-                      viewMode === 'list'
-                        ? 'bg-primary-600 text-white'
-                        : 'text-theme-secondary hover:text-primary-600'
-                    }`}
-                    aria-label="List view"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </div>
+                {/* View Mode Toggle - Hide on mobile */}
+                {screenSize !== 'mobile' && (
+                  <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
+                    <button
+                      onClick={() => {
+                        if (screenSize !== 'mobile') {
+                          setViewMode('grid');
+                        }
+                      }}
+                      className={`p-2 rounded transition-all ${
+                        viewMode === 'grid'
+                          ? 'bg-primary-600 text-white'
+                          : 'text-theme-secondary hover:text-primary-600'
+                      }`}
+                      aria-label="Grid view"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setViewMode('list')}
+                      className={`p-2 rounded transition-all ${
+                        viewMode === 'list'
+                          ? 'bg-primary-600 text-white'
+                          : 'text-theme-secondary hover:text-primary-600'
+                      }`}
+                      aria-label="List view"
+                    >
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Results Count */}

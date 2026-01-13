@@ -12,15 +12,23 @@ export default function Brands() {
   const { brands, loading: brandsLoading, error: brandsError } = useBrands();
   const { products, loading: productsLoading } = useProducts();
 
-  // Create a map of brandId to product count
   const productCounts = useMemo(() => {
     const counts = new Map<string, number>();
     products.forEach((product) => {
-      const count = counts.get(product.brandId) || 0;
-      counts.set(product.brandId, count + 1);
+      if (product.isHidden !== true) {
+        const count = counts.get(product.brandId) || 0;
+        counts.set(product.brandId, count + 1);
+      }
     });
     return counts;
   }, [products]);
+
+  const visibleBrands = useMemo(() => {
+    return brands.filter((brand) => {
+      const count = productCounts.get(brand.id) || 0;
+      return count > 0;
+    });
+  }, [brands, productCounts]);
 
   const loading = brandsLoading || productsLoading;
   const error = brandsError;
@@ -86,7 +94,7 @@ export default function Brands() {
           animate="visible"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto"
         >
-          {brands.map((brand) => (
+          {visibleBrands.map((brand) => (
             <motion.div
               key={brand.id}
               variants={itemVariants}

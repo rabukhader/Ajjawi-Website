@@ -25,7 +25,24 @@ export default async function handler(
     }
 
     const data = await response.json();
-    res.status(200).json(data);
+    
+    if (Array.isArray(data)) {
+      const sortedBrands = [...data].sort((a, b) => {
+        // If either brand is "اخرى", handle it separately
+        const aIsOther = (a.name === 'اخرى' || a.name === 'أُخرى' || a.nameEnglish === 'Others');
+        const bIsOther = (b.name === 'اخرى' || b.name === 'أُخرى' || b.nameEnglish === 'Others');
+        
+        if (aIsOther === bIsOther) {
+          return (a.id || 0) - (b.id || 0);
+        }
+        
+        return aIsOther ? 1 : -1;
+      });
+      
+      res.status(200).json(sortedBrands);
+    } else {
+      res.status(200).json(data);
+    }
   } catch (error) {
     console.error('Error fetching brands:', error);
     res.status(500).json({ 
