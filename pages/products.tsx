@@ -387,11 +387,7 @@ export default function Products() {
                 {screenSize !== 'mobile' && (
                   <div className="flex items-center gap-2 bg-theme-secondary rounded-lg p-1">
                     <button
-                      onClick={() => {
-                        if (screenSize !== 'mobile') {
-                          setViewMode('grid');
-                        }
-                      }}
+                      onClick={() => setViewMode('grid')}
                       className={`p-2 rounded transition-all ${
                         viewMode === 'grid'
                           ? 'bg-primary-600 text-white'
