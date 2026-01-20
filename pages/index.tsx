@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { heroImages } from '../data/hero-images';
 import homeContent from '../data/home-content.json';
@@ -49,7 +50,12 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <>
+      <Head>
+        <title>{t('nav.home')} | Ajjawi</title>
+        <meta name="description" content={t('home.hero.subtitle')} />
+      </Head>
+      <div className="min-h-screen">
       {/* Hero Section with Slideshow */}
       <section className="relative h-[600px] overflow-hidden">
         {heroImages.length > 0 ? (
@@ -387,6 +393,7 @@ export default function Home() {
         </motion.div>
       )}
     </div>
+    </>
   );
 }
 

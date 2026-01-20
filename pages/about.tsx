@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 
 export default function About() {
@@ -46,7 +47,12 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen py-20 bg-theme-secondary">
+    <>
+      <Head>
+        <title>{t('nav.about')} | Ajjawi</title>
+        <meta name="description" content={t('about.subtitle')} />
+      </Head>
+      <div className="min-h-screen py-20 bg-theme-secondary">
       <div className="container mx-auto px-4">
         {/* Hero Section */}
         <motion.div
@@ -154,6 +160,7 @@ export default function About() {
         </section>
       </div>
     </div>
+    </>
   );
 }
 

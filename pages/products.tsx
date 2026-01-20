@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import Image from 'next/image';
+import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useProducts } from '../src/hooks/useProducts';
 import { useBrands } from '../src/hooks/useBrands';
@@ -212,7 +213,12 @@ export default function Products() {
   }
 
   return (
-    <div className="py-20 bg-theme-secondary">
+    <>
+      <Head>
+        <title>{t('nav.products')} | Ajjawi</title>
+        <meta name="description" content={t('products.subtitle')} />
+      </Head>
+      <div className="py-20 bg-theme-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 text-theme-primary">{t('products.title')}</h1>
@@ -707,6 +713,7 @@ export default function Products() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

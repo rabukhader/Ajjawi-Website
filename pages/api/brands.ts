@@ -27,16 +27,23 @@ export default async function handler(
     const data = await response.json();
     
     if (Array.isArray(data)) {
+      const getSortOrder = (id: number | string | undefined): number => {
+        const idNum = typeof id === 'string' ? parseInt(id, 10) : (id || 0);
+        
+        if (idNum === 2) return 1;
+        if (idNum === 1) return 2;
+        if (idNum === 3) return 3;
+        if (idNum === 4) return 4;
+        if (idNum === 5) return 5;
+        if (idNum === 14) return 9999;
+        
+        return 100 + idNum;
+      };
+      
       const sortedBrands = [...data].sort((a, b) => {
-        // If either brand is "اخرى", handle it separately
-        const aIsOther = (a.name === 'اخرى' || a.name === 'أُخرى' || a.nameEnglish === 'Others');
-        const bIsOther = (b.name === 'اخرى' || b.name === 'أُخرى' || b.nameEnglish === 'Others');
-        
-        if (aIsOther === bIsOther) {
-          return (a.id || 0) - (b.id || 0);
-        }
-        
-        return aIsOther ? 1 : -1;
+        const aOrder = getSortOrder(a.id);
+        const bOrder = getSortOrder(b.id);
+        return aOrder - bOrder;
       });
       
       res.status(200).json(sortedBrands);

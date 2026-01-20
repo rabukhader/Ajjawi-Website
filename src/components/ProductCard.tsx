@@ -13,7 +13,7 @@ interface ProductCardProps {
 const ProductCard = memo(({ product, brandName, categoryName, t, showBrand = true }: ProductCardProps) => {
   return (
     <div className="bg-theme-card rounded-lg shadow-theme overflow-hidden hover:shadow-theme-lg transition-all duration-200 hover:-translate-y-1 h-full flex flex-col">
-      <div className="relative h-64 overflow-hidden flex-shrink-0">
+      <div className="relative h-64 overflow-hidden flex-shrink-0 m-10 sm:m-10 lg:m-4">
         {product.image && (
           <Image
             src={product.image}

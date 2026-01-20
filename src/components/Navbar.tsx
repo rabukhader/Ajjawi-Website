@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
+import logoImage from '../assets/logo.png';
 
 const Navbar = () => {
   const router = useRouter();
@@ -39,13 +41,18 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent"
-            >
-              Ajjawi
-            </motion.div>
+          <Link href="/" className="flex items-center space-x-2 rtl:space-x-reverse">
+            <div className="relative w-30 h-8 md:w-52 md:h-12 overflow-visible">
+              <Image
+                src={logoImage}
+                alt="Ajjawi"
+                fill
+                className="object-contain"
+                style={{ transform: 'scale(2.7)' }}
+                unoptimized
+                priority
+              />
+            </div>
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">

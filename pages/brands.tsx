@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { useBrands } from '../src/hooks/useBrands';
 import { useProducts } from '../src/hooks/useProducts';
@@ -74,7 +75,12 @@ export default function Brands() {
   }
 
   return (
-    <div className="min-h-screen py-20 bg-theme-secondary">
+    <>
+      <Head>
+        <title>{t('nav.brands')} | Ajjawi</title>
+        <meta name="description" content={t('brands.subtitle')} />
+      </Head>
+      <div className="min-h-screen py-20 bg-theme-secondary">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -133,6 +139,7 @@ export default function Brands() {
         </motion.div>
       </div>
     </div>
+    </>
   );
 }
 

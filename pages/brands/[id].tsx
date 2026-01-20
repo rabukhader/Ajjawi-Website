@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../../src/contexts/LanguageContext';
 import { useState, useEffect, useMemo } from 'react';
@@ -82,9 +83,20 @@ export default function BrandDetail() {
     );
   }
 
+  const brandName = brand ? getBrandName(brand, language) : '';
+
   return (
-    <div className="min-h-screen py-20 bg-theme-secondary">
-      <div className="container mx-auto px-4">
+    <>
+      <Head>
+        <title>
+          {brandName 
+            ? `${brandName} | Ajjawi`
+            : `${t('nav.brands')} | Ajjawi`}
+        </title>
+        <meta name="description" content={brand?.description || ''} />
+      </Head>
+      <div className="min-h-screen py-20 bg-theme-secondary">
+        <div className="container mx-auto px-4">
         {/* Brand Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -133,19 +145,9 @@ export default function BrandDetail() {
               <p className="text-theme-secondary">{t('brand.detail.noProducts')}</p>
             </div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {brandProducts.map((product, index) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {brandProducts.map((product) => (
+                <div key={product.id} className="h-full" style={{ width: '250px' }}>
                   <ProductCard
                     product={product}
                     brandName={getBrandName(brand, language)}
@@ -153,13 +155,14 @@ export default function BrandDetail() {
                     t={t}
                     showBrand={false}
                   />
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

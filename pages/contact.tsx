@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 
 export default function Contact() {
@@ -27,7 +28,12 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen py-20 bg-theme-secondary">
+    <>
+      <Head>
+        <title>{t('nav.contact')} | Ajjawi</title>
+        <meta name="description" content={t('contact.subtitle')} />
+      </Head>
+      <div className="min-h-screen py-20 bg-theme-secondary">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -237,6 +243,7 @@ export default function Contact() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
