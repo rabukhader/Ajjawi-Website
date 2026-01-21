@@ -45,7 +45,10 @@ export default async function handler(
         const bOrder = getSortOrder(b.id);
         return aOrder - bOrder;
       });
-      
+      console.log("sortedBrands", sortedBrands);
+      console.log('--------------------------------');
+      console.log("data", data);
+      console.log('--------------------------------');
       res.status(200).json(sortedBrands);
     } else {
       res.status(200).json(data);
