@@ -11,7 +11,6 @@ export default async function handler(
   }
 
   try {
-    console.log('--------------TRY BLOCK----------------');
     const response = await fetch(`${API_BASE_URL}/api/brands`, {
       method: 'GET',
       headers: {
@@ -19,52 +18,16 @@ export default async function handler(
         'Accept': 'application/json',
       },
     });
-    console.log('--------------RESPONSE----------------');
 
     if (!response.ok) {
-      console.log('--------------NOT OK----------------');
       const errorData = await response.json().catch(() => ({}));
-      console.log('--------------ERROR DATA----------------');
       console.log(errorData);
-      console.log('--------------------------------');
       return res.status(response.status).json(errorData);
     }
 
     const data = await response.json();
-    console.log('--------------DATA----------------');
-    console.log(data);
-    console.log(typeof data);
-    console.log('--------------------------------');
-    if (Array.isArray(data)) {
-      const getSortOrder = (id: number | string | undefined): number => {
-        const idNum = typeof id === 'string' ? parseInt(id, 10) : (id || 0);
-        
-        if (idNum === 2) return 1;
-        if (idNum === 1) return 2;
-        if (idNum === 3) return 3;
-        if (idNum === 4) return 4;
-        if (idNum === 5) return 5;
-        if (idNum === 14) return 9999;
-        
-        return 100 + idNum;
-      };
-      
-      const sortedBrands = [...data].sort((a, b) => {
-        const aOrder = getSortOrder(a.id);
-        const bOrder = getSortOrder(b.id);
-        return aOrder - bOrder;
-      });
-      console.log("sortedBrands", sortedBrands);
-      console.log('--------------------------------');
-      console.log("data", data);
-      console.log('--------------------------------');
-      res.status(200).json(sortedBrands);
-    } else {
-      console.log('--------------not array------------------');
       res.status(200).json(data);
-    }
   } catch (error) {
-    console.log('--------------CATCH ERROR------------------');
     console.error('Error fetching brands:', error);
     res.status(500).json({ 
       message: 'Failed to fetch brands',

@@ -7,16 +7,33 @@ export function useBrands() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const getSortOrder = (id: number | string | undefined): number => {
+    const idNum = typeof id === 'string' ? parseInt(id, 10) : (id || 0);
+    
+    if (idNum === 2) return 1;
+    if (idNum === 1) return 2;
+    if (idNum === 3) return 3;
+    if (idNum === 4) return 4;
+    if (idNum === 5) return 5;
+    if (idNum === 14) return 9999;
+    
+    return 100 + idNum;
+  };
+
   useEffect(() => {
-    console.log('--------------INSIDE USE EFFECT----------------');
     const fetchBrands = async () => {
       try {
-        console.log('--------------TRY BLOCK----------------');
         setLoading(true);
         const data = await brandRepository.getAll();
-        setBrands(data);
-        console.log("data", data);
-        console.log(typeof data);
+        
+        const sortedBrands = [...data].sort((a, b) => {
+          const aOrder = getSortOrder(a.id);
+          const bOrder = getSortOrder(b.id);
+          return aOrder - bOrder;
+        });
+        
+        setBrands(sortedBrands);
+
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch brands'));
@@ -29,7 +46,6 @@ export function useBrands() {
     fetchBrands();
   }, []);
 
-  console.log('--------------outside UseEffects BRANDS----------------');
   return { brands, loading, error, refetch: () => {
     const fetchBrands = async () => {
       try {
