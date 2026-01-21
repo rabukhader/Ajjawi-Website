@@ -73,7 +73,6 @@ export default function Brands() {
       </div>
     );
   }
-  console.log('----------------TEST TEST TEST----------------');
 
   return (
     <>
