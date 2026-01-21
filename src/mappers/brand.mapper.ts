@@ -61,6 +61,11 @@ export function mapApiBrandToBrand(apiBrand: ApiBrand): Brand {
 
 // Transform API Brands array to internal Brands array
 export function mapApiBrandsToBrands(apiBrands: ApiBrand[]): Brand[] {
+  console.log('--------------INSIDE MAP API BRANDS TO BRANDS----------------');
+  console.log('--------------API BRANDS----------------');
+  console.log(apiBrands);
+  console.log(typeof apiBrands);
+  console.log('--------------------------------');
   return apiBrands.map(mapApiBrandToBrand);
 }
 

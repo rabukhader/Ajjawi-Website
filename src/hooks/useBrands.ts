@@ -8,11 +8,15 @@ export function useBrands() {
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    console.log('--------------INSIDE USE EFFECT----------------');
     const fetchBrands = async () => {
       try {
+        console.log('--------------TRY BLOCK----------------');
         setLoading(true);
         const data = await brandRepository.getAll();
         setBrands(data);
+        console.log("data", data);
+        console.log(typeof data);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to fetch brands'));
@@ -25,6 +29,7 @@ export function useBrands() {
     fetchBrands();
   }, []);
 
+  console.log('--------------outside UseEffects BRANDS----------------');
   return { brands, loading, error, refetch: () => {
     const fetchBrands = async () => {
       try {
