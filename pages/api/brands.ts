@@ -51,9 +51,11 @@ export default async function handler(
       console.log('--------------------------------');
       res.status(200).json(sortedBrands);
     } else {
+      console.log('--------------not array------------------');
       res.status(200).json(data);
     }
   } catch (error) {
+    console.log('--------------CATCH ERROR------------------');
     console.error('Error fetching brands:', error);
     res.status(500).json({ 
       message: 'Failed to fetch brands',
