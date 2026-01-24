@@ -112,57 +112,39 @@
   "photos": [
     {
       "id": 1,
-      "url": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=400&fit=crop",
-      "title": "Premium Quality Products",
-      "titleAr": "منتجات عالية الجودة"
+      "url": "company1",
+      "title": "Our Fleet & HQ",
+      "titleAr": "أسطولنا ومقرنا"
     },
     {
       "id": 2,
-      "url": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=400&h=400&fit=crop",
-      "title": "Fresh Ingredients",
-      "titleAr": "مكونات طازجة"
+      "url": "company2",
+      "title": "The Ajjawi Headquarters",
+      "titleAr": "المقر الرئيسي لعجاوي"
     },
     {
       "id": 3,
-      "url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop",
-      "title": "Our Product Range",
-      "titleAr": "مجموعة منتجاتنا"
+      "url": "logo",
+      "title": "Ajjawi Brand",
+      "titleAr": "علامة عجاوي"
     },
     {
       "id": 4,
-      "url": "https://images.unsplash.com/photo-1495521821757-a1efb6729352?w=400&h=400&fit=crop",
-      "title": "Quality Assurance",
-      "titleAr": "ضمان الجودة"
+      "url": "group1",
+      "title": "Product Collection",
+      "titleAr": "مجموعة المنتجات"
     },
     {
       "id": 5,
-      "url": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=400&fit=crop",
-      "title": "Food Excellence",
-      "titleAr": "التميز الغذائي"
+      "url": "group2",
+      "title": "Signature Products",
+      "titleAr": "منتجاتنا المميزة"
     },
     {
       "id": 6,
-      "url": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop",
-      "title": "Distribution Network",
-      "titleAr": "شبكة التوزيع"
-    },
-    {
-      "id": 7,
-      "url": "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop",
-      "title": "Customer Satisfaction",
-      "titleAr": "رضا العملاء"
-    },
-    {
-      "id": 8,
-      "url": "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400&h=400&fit=crop",
-      "title": "Our Commitment",
-      "titleAr": "التزامنا"
-    },
-    {
-      "id": 9,
-      "url": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop",
-      "title": "Brand Portfolio",
-      "titleAr": "محفظة العلامات التجارية"
+      "url": "group3",
+      "title": "Our Product Line",
+      "titleAr": "خط منتجاتنا"
     }
   ]
 }

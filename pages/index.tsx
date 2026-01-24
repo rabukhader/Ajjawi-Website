@@ -2,10 +2,26 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import type { StaticImageData } from 'next/image';
 import Head from 'next/head';
 import { useLanguage } from '../src/contexts/LanguageContext';
 import { heroImages } from '../data/hero-images';
 import homeContent from '../data/home-content.json';
+import company1 from '../src/assets/home_page_images/company1.jpeg';
+import company2 from '../src/assets/home_page_images/company2.jpeg';
+import group1 from '../src/assets/home_page_images/group1.jpeg';
+import group2 from '../src/assets/home_page_images/group2.jpeg';
+import group3 from '../src/assets/home_page_images/group3.jpeg';
+import logo from '../src/assets/home_page_images/logo.jpeg';
+
+const photoImageMap: Record<string, StaticImageData> = {
+  company1,
+  company2,
+  logo,
+  group1,
+  group2,
+  group3,
+};
 
 export default function Home() {
   const { t, language } = useLanguage();
@@ -77,7 +93,6 @@ export default function Home() {
                 src={image}
                 alt={`Hero slide ${index + 1}`}
                 fill
-                className="object-cover"
                 unoptimized
               />
             </div>
@@ -324,7 +339,11 @@ export default function Home() {
             viewport={{ once: true }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {homeContent.photos.map((photo) => (
+            {homeContent.photos.map((photo) => {
+              const photoImage = photoImageMap[photo.url];
+              if (!photoImage) return null;
+              const isLogo = photo.url === 'logo';
+              return (
               <motion.div
                 key={photo.id}
                 variants={itemVariants}
@@ -332,12 +351,12 @@ export default function Home() {
                 className="relative group cursor-pointer overflow-hidden rounded-lg shadow-theme hover:shadow-theme-lg transition-shadow"
                 onClick={() => setSelectedPhoto(photo.id)}
               >
-                <div className="aspect-square overflow-hidden relative">
+                <div className={`aspect-square overflow-hidden relative ${isLogo ? 'bg-white' : ''}`}>
                   <Image
-                    src={photo.url}
+                    src={photoImage}
                     alt={language === 'ar' ? photo.titleAr : photo.title}
                     fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-110"
+                    className={`${isLogo ? 'object-contain p-6' : 'object-cover'} transition-transform duration-300 group-hover:scale-110`}
                     unoptimized
                   />
                 </div>
@@ -349,7 +368,8 @@ export default function Home() {
                   </div>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
           </motion.div>
         </div>
       </section>
@@ -369,26 +389,35 @@ export default function Home() {
             className="relative max-w-4xl w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-10 text-white bg-black/50 rounded-full p-2 hover:bg-black/70 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-            {homeContent.photos.find(p => p.id === selectedPhoto)?.url && (
-              <Image
-                src={homeContent.photos.find(p => p.id === selectedPhoto)!.url}
-                alt={language === 'ar' 
-                  ? homeContent.photos.find(p => p.id === selectedPhoto)?.titleAr || ''
-                  : homeContent.photos.find(p => p.id === selectedPhoto)?.title || ''}
-                width={800}
-                height={600}
-                className="w-full h-auto rounded-lg"
-                unoptimized
-              />
-            )}
+            {(() => {
+              const selectedPhotoData = homeContent.photos.find((p) => p.id === selectedPhoto);
+              const selectedPhotoImage = selectedPhotoData ? photoImageMap[selectedPhotoData.url] : undefined;
+
+              if (!selectedPhotoData || !selectedPhotoImage) return null;
+
+              return (
+                <>
+                  <button
+                    onClick={() => setSelectedPhoto(null)}
+                    className="absolute top-4 right-4 z-10 text-white bg-black/50 rounded-full p-2 hover:bg-black/70 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  <Image
+                    src={selectedPhotoImage}
+                    alt={language === 'ar' 
+                      ? selectedPhotoData.titleAr || ''
+                      : selectedPhotoData.title || ''}
+                    width={800}
+                    height={600}
+                    className="w-full h-auto rounded-lg"
+                    unoptimized
+                  />
+                </>
+              );
+            })()}
           </motion.div>
         </motion.div>
       )}
