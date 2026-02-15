@@ -230,11 +230,11 @@ export default function Products() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <aside className="lg:w-80 flex-shrink-0">
-            <div className="bg-theme-card rounded-lg shadow-theme p-6 sticky top-24">
-              <h2 className="text-2xl font-bold mb-6 text-theme-primary">{t('products.filters.title')}</h2>
+            <div className="bg-theme-card rounded-lg shadow-theme p-6 sticky top-24 flex flex-col max-h-[calc(100vh-6rem)] overflow-hidden">
+              <h2 className="text-2xl font-bold mb-6 text-theme-primary flex-shrink-0">{t('products.filters.title')}</h2>
 
               {/* Search */}
-              <div className="mb-8">
+              <div className="mb-6 flex-shrink-0">
                 <label className="block text-sm font-semibold mb-2 text-theme-secondary">
                   {t('products.filters.search')}
                 </label>
@@ -248,76 +248,79 @@ export default function Products() {
                 />
               </div>
 
-              {/* Category Filter */}
-              {categories.length > 0 && (
-                <div className="mb-8">
+              {/* Scrollable filter lists */}
+              <div className="overflow-y-auto min-h-0 flex-1 pr-1 -mr-1">
+                {/* Category Filter */}
+                {categories.length > 0 && (
+                  <div className="mb-8">
+                    <label className="block text-sm font-semibold mb-4 text-theme-secondary">
+                      {t('products.filters.category')}
+                    </label>
+                    <div className="space-y-3">
+                      {categories.map((category) => (
+                        <label
+                          key={category.id}
+                          className="flex items-center cursor-pointer hover:text-primary-600 transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(category.id)}
+                            onChange={() => handleCategoryToggle(category.id)}
+                            className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500 focus:ring-2"
+                          />
+                          <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{category.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {selectedCategories.length > 0 && (
+                      <button
+                        onClick={() => {
+                          setSelectedCategories([]);
+                        }}
+                        className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                      >
+                        {t('products.filters.clearCategories')}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Brand Filter */}
+                <div>
                   <label className="block text-sm font-semibold mb-4 text-theme-secondary">
-                    {t('products.filters.category')}
+                    {t('products.filters.brand')}
                   </label>
                   <div className="space-y-3">
-                    {categories.map((category) => (
+                    {brandsData.map((brand) => (
                       <label
-                        key={category.id}
+                        key={brand.id}
                         className="flex items-center cursor-pointer hover:text-primary-600 transition-colors"
                       >
                         <input
                           type="checkbox"
-                          checked={selectedCategories.includes(category.id)}
-                          onChange={() => handleCategoryToggle(category.id)}
+                          checked={selectedBrands.includes(brand.id)}
+                          onChange={() => handleBrandToggle(brand.id)}
                           className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500 focus:ring-2"
                         />
-                        <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{category.name}</span>
+                        <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{getBrandName(brand, language)}</span>
                       </label>
                     ))}
                   </div>
-                  {selectedCategories.length > 0 && (
+                  {selectedBrands.length > 0 && (
                     <button
                       onClick={() => {
-                        setSelectedCategories([]);
+                        setSelectedBrands([]);
                       }}
                       className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
                     >
-                      {t('products.filters.clearCategories')}
+                      {t('products.filters.clearBrands')}
                     </button>
                   )}
                 </div>
-              )}
-
-              {/* Brand Filter */}
-              <div>
-                <label className="block text-sm font-semibold mb-4 text-theme-secondary">
-                  {t('products.filters.brand')}
-                </label>
-                <div className="space-y-3">
-                  {brandsData.map((brand) => (
-                    <label
-                      key={brand.id}
-                      className="flex items-center cursor-pointer hover:text-primary-600 transition-colors"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedBrands.includes(brand.id)}
-                        onChange={() => handleBrandToggle(brand.id)}
-                        className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500 focus:ring-2"
-                      />
-                      <span className="ml-3 rtl:mr-3 rtl:ml-0 text-theme-secondary">{getBrandName(brand, language)}</span>
-                    </label>
-                  ))}
-                </div>
-                {selectedBrands.length > 0 && (
-                  <button
-                    onClick={() => {
-                      setSelectedBrands([]);
-                    }}
-                    className="mt-4 text-sm text-primary-600 hover:text-primary-700 font-semibold"
-                  >
-                    {t('products.filters.clearBrands')}
-                  </button>
-                )}
               </div>
 
               {/* Results Count */}
-              <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--border-primary)' }}>
+              <div className="mt-6 pt-6 border-t flex-shrink-0" style={{ borderColor: 'var(--border-primary)' }}>
                 <p className="text-sm text-theme-secondary">
                   {t('products.filters.results')} <span className="font-semibold">{filteredProducts.length + newProducts.length}</span> {t('products.filters.of')}{' '}
                   <span className="font-semibold">{productsData.filter(p => p.isHidden !== true).length}</span> {t('products.filters.products')}
